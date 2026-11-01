@@ -1,0 +1,2657 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PageRecorder</title>
+    <link rel="stylesheet" href="../styles/ui-components.css">
+    <style>
+        body {
+            width: 420px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .log-level-control {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .log-level-control label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-right: 8px;
+        }
+
+        .log-level-control select {
+            font-size: 12px;
+            padding: 4px 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 3px;
+            background-color: white;
+        }
+
+        /* モード選択UI */
+        .mode-selector {
+            display: flex;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #3498db;
+        }
+
+        .mode-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .mode-option.active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .mode-option:hover:not(.active) {
+            background-color: #d5dbdb;
+        }
+
+        .mode-description {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mode-helper-note {
+            margin: 0 0 15px;
+            padding: 10px 12px;
+            border: 1px solid #d6e2ea;
+            border-radius: 6px;
+            background: #f8fbfd;
+            color: #4f6272;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .monitor-summary {
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #d6e2ea;
+            border-radius: 4px;
+            background: #f8fbfd;
+        }
+
+        .summary-card {
+            display: flex;
+            flex: 1 1 0;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+            padding: 9px 12px;
+        }
+
+        .summary-card + .summary-card {
+            border-left: 1px solid #d6e2ea;
+        }
+
+        .summary-label {
+            margin: 0;
+            font-size: 12px;
+            color: #5a6c7d;
+            white-space: nowrap;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .summary-card--running .summary-value {
+            color: #3498db;
+        }
+
+        .summary-card--stopped .summary-value {
+            color: #5a6c7d;
+        }
+
+        .summary-card--disabled .summary-value {
+            color: #a45b55;
+        }
+
+        .summary-card--scheduled {
+            flex: 1.5 1 0;
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .summary-card--scheduled .summary-value {
+            color: #536d8a;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+
+        .monitor-list-header,
+        .monitor-add-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .monitor-list-header {
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .monitor-list-header h3 {
+            margin: 0;
+        }
+
+        .monitor-add-controls {
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .monitor-add-controls .form-group {
+            flex: 1 1 auto;
+            margin: 0;
+        }
+
+        .monitor-add-controls .add-monitor-btn {
+            flex: 0 0 auto;
+            width: auto;
+        }
+
+        .helper-note {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #5a6c7d;
+            line-height: 1.5;
+        }
+
+        /* 複数監視リスト */
+        .monitoring-list {
+            display: none;
+        }
+
+        .monitoring-list.show {
+            display: block;
+        }
+
+        .monitor-item {
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .monitor-item.enabled {
+            border-color: #27ae60;
+            background-color: #d5f4e6;
+        }
+
+        .monitor-item.disabled {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .monitoring-execution-history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .monitoring-execution-history-header h3 {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .monitoring-execution-history-header .btn-secondary {
+            flex: 0 0 auto;
+            width: auto;
+            padding: 8px 14px;
+        }
+
+        .monitoring-execution-history-header .section-toggle {
+            flex: 1 1 auto;
+            width: auto;
+        }
+
+        .monitor-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .monitor-status {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: white;
+        }
+
+        .monitor-status.running {
+            background-color: #27ae60;
+        }
+
+        .monitor-status.stopped {
+            background-color: #95a5a6;
+        }
+
+        .monitor-status.error {
+            background-color: #e74c3c;
+        }
+
+        .monitor-status.disabled {
+            background-color: #7f8c8d;
+        }
+
+        .monitor-status.scheduled {
+            background-color: #64748b;
+        }
+
+        .scheduled-watch-site-row {
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .scheduled-watch-site-label {
+            color: #5a6c7d;
+            font-weight: 600;
+        }
+
+        .scheduled-watch-site-value {
+            color: #34495e;
+            overflow-wrap: anywhere;
+        }
+
+        .scheduled-watch-site.monitor-item.enabled,
+        .scheduled-watch-site.monitor-item.disabled {
+            border-color: #cbd5e1;
+            background: #fff;
+        }
+
+        .single-scheduled-watch-summary {
+            margin-top: 12px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #f8fafc;
+            color: #34495e;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .scheduled-watch-site .monitor-status.running {
+            background-color: #2563eb;
+        }
+
+        .scheduled-watch-execution-card {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid #64748b;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .scheduled-watch-execution-card.status-success { border-left-color: #16a34a; background: #f0fdf4; }
+        .scheduled-watch-execution-card.status-running,
+        .scheduled-watch-execution-card.status-starting { border-left-color: #2563eb; background: #eff6ff; }
+        .scheduled-watch-execution-card.status-needs-review { border-left-color: #ca8a04; background: #fefce8; }
+        .scheduled-watch-execution-card.status-failed { border-left-color: #dc2626; background: #fef2f2; }
+
+        .scheduled-watch-execution-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .scheduled-watch-execution-badge {
+            padding: 2px 7px;
+            border-radius: 999px;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .status-success .scheduled-watch-execution-badge { background: #16a34a; }
+        .status-running .scheduled-watch-execution-badge,
+        .status-starting .scheduled-watch-execution-badge { background: #2563eb; }
+        .status-needs-review .scheduled-watch-execution-badge { background: #ca8a04; }
+        .status-failed .scheduled-watch-execution-badge { background: #dc2626; }
+
+        .scheduled-watch-execution-detail {
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #34495e;
+        }
+
+        .scheduled-watch-execution-detail-label {
+            display: inline-block;
+            min-width: 64px;
+            color: #5a6c7d;
+            font-weight: 600;
+        }
+
+        .scheduled-watch-execution-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .scheduled-watch-execution-metric {
+            padding: 6px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            text-align: center;
+        }
+
+        .scheduled-watch-execution-metric-label {
+            display: block;
+            color: #5a6c7d;
+            font-size: 11px;
+        }
+
+        .scheduled-watch-execution-metric-value {
+            display: block;
+            margin-top: 2px;
+            color: #1e293b;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .monitoring-execution-history-table {
+            width: 100%;
+            margin-top: 8px;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .monitoring-execution-history-table th,
+        .monitoring-execution-history-table td {
+            padding: 5px;
+            border: 1px solid #dfe6e9;
+            text-align: left;
+            vertical-align: top;
+            word-break: break-word;
+        }
+
+        .monitoring-execution-history-table th { background: #f1f5f9; }
+
+        .scheduled-watch-execution-text {
+            margin: 8px 0 0;
+            padding: 8px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            border-radius: 4px;
+            background: #f8fafc;
+            color: #1e293b;
+            font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+
+        .scheduled-watch-execution-text-details {
+            margin-top: 8px;
+        }
+
+        .scheduled-watch-execution-text-details summary {
+            cursor: pointer;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .monitor-url {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .monitor-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-small.btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-small.btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-small.btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .add-monitor-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .add-monitor-btn:hover {
+            background-color: #229954;
+        }
+
+        .section {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        .section-toggle {
+            width: 100%;
+            padding: 0 0 8px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: transparent;
+            color: #2c3e50;
+            border: none;
+            border-bottom: 2px solid #3498db;
+            border-radius: 0;
+            text-align: left;
+        }
+
+        .section-toggle-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .section-toggle-state {
+            flex: 0 0 auto;
+            font-size: 12px;
+            font-weight: normal;
+            color: #5a6c7d;
+        }
+
+        .section-collapsible.collapsed .section-toggle {
+            margin-bottom: 0;
+        }
+
+        .section-toggle-content {
+            margin-top: 15px;
+        }
+
+        .subsection {
+            margin-top: 18px;
+        }
+
+        .subsection:first-of-type {
+            margin-top: 0;
+        }
+
+        .subsection h4 {
+            margin: 0 0 12px 0;
+            padding-top: 2px;
+            padding-bottom: 6px;
+            color: #4f6272;
+            font-size: 14px;
+            border-bottom: 1px solid #d6e2ea;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"], input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .slider-container {
+            margin-top: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .schedule-start-hint {
+            color: #5a6c7d;
+            font-size: 11px;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .scheduled-watch-section h3 {
+            border-bottom-color: #f1c40f;
+        }
+
+        .keyword-monitoring-fetch-conditions.is-disabled {
+            opacity: 0.5;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-running {
+            background-color: #28a745;
+        }
+
+        .status-stopped {
+            background-color: #dc3545;
+        }
+
+        .status-idle {
+            background-color: #6c757d;
+        }
+
+        .site-toggle-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .site-toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            padding: 9px 10px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+
+        .site-label {
+            min-width: 0;
+            flex: 1;
+            font-size: 13px;
+            color: #2c3e50;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .toggle-switch {
+            position: relative;
+            flex: 0 0 auto;
+            width: 44px;
+            height: 24px;
+            padding: 0;
+            border: none;
+            border-radius: 999px;
+            background-color: #bdc3c7;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .toggle-switch.active {
+            background-color: #27ae60;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            transition: transform 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        .empty-hint {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .url-register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .url-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .url-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+
+        .url-item-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .url-site-name {
+            display: block;
+            font-weight: bold;
+            font-size: 13px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .url-value {
+            display: block;
+            font-size: 12px;
+            color: #5a6c7d;
+            word-break: break-all;
+        }
+
+        .btn-delete {
+            flex: 0 0 auto;
+            padding: 6px 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .test-card {
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            padding: 14px;
+            background-color: #f8f9fa;
+        }
+
+        .two-tier-acceptance-layout {
+            display: grid;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .two-tier-acceptance-group {
+            padding: 12px;
+            border: 1px solid #dbe7ee;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .two-tier-acceptance-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .two-tier-acceptance-group-title {
+            color: #2c3e50;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .two-tier-acceptance-group-meta {
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: #edf5fa;
+            color: #34759c;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .two-tier-acceptance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .two-tier-acceptance-card {
+            display: flex;
+            flex: initial;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+            min-height: 104px;
+            padding: 12px;
+            border: 1px solid #c9dbe6;
+            border-radius: 8px;
+            background: #f8fbfd;
+            color: #2c3e50;
+            text-align: left;
+        }
+
+        .two-tier-acceptance-card:hover:not(:disabled) {
+            border-color: #4b9bd1;
+            background: #edf7fc;
+        }
+
+        .two-tier-acceptance-card:focus-visible {
+            outline: 3px solid rgba(52, 152, 219, 0.35);
+            outline-offset: 2px;
+        }
+
+        .two-tier-acceptance-card-kicker {
+            margin-bottom: 5px;
+            color: #34759c;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .two-tier-acceptance-card-title {
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .two-tier-acceptance-card-meta {
+            margin-top: auto;
+            padding-top: 8px;
+            color: #5a6c7d;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .two-tier-acceptance-card.is-detection .two-tier-acceptance-card-kicker {
+            color: #9a6700;
+        }
+
+        .two-tier-acceptance-card.is-long-running {
+            min-height: 0;
+        }
+
+        @media (max-width: 390px) {
+            .two-tier-acceptance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scheduled-watch-test-intro {
+            margin: 0;
+            color: #405466;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .scheduled-watch-test-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .scheduled-watch-test-card,
+        .scheduled-watch-test-target {
+            padding: 12px;
+            border: 1px solid #d7e0e8;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .scheduled-watch-test-card h5,
+        .scheduled-watch-test-target label {
+            display: block;
+            margin: 0 0 6px;
+            color: #2c3e50;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .scheduled-watch-test-card p {
+            margin: 0;
+        }
+
+        .scheduled-watch-test-card .btn-secondary {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .scheduled-watch-test-target select {
+            width: 100%;
+        }
+
+        .scheduled-watch-test-safety-note {
+            margin-top: 8px !important;
+            padding: 7px 8px;
+            border-radius: 4px;
+            background: #eff6ff;
+            color: #1e4f7a;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .scheduled-watch-diff-gmail-option {
+            display: block;
+            margin-top: 10px;
+            color: #405466;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .scheduled-watch-artifact-mode-selector {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            margin: 10px 0 0;
+            padding: 0;
+            border: 0;
+        }
+
+        .scheduled-watch-artifact-mode-selector legend {
+            margin-bottom: 6px;
+            color: #405466;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .scheduled-watch-artifact-mode-option {
+            display: block;
+            cursor: pointer;
+        }
+
+        .scheduled-watch-artifact-mode-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .scheduled-watch-artifact-mode-option span {
+            display: block;
+            min-height: 54px;
+            padding: 8px;
+            border: 1px solid #c8d5e0;
+            border-radius: 5px;
+            color: #405466;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .scheduled-watch-artifact-mode-option input:checked + span {
+            border-color: #2463a3;
+            background: #eff6ff;
+            color: #173f67;
+            font-weight: 700;
+        }
+
+        .scheduled-watch-artifact-mode-option input:focus-visible + span {
+            outline: 2px solid #2463a3;
+            outline-offset: 2px;
+        }
+
+        .scheduled-watch-test-criteria {
+            margin-top: 12px;
+        }
+
+        .scheduled-watch-test-criteria summary {
+            cursor: pointer;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .scheduled-watch-test-criteria p {
+            margin: 8px 0 0;
+        }
+
+        .scenario-image-block {
+            margin: 10px 0 14px;
+            padding: 10px 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+
+        .scenario-image-block img {
+            display: block;
+            width: 100%;
+            border-radius: 4px;
+            border: 1px solid #dfe6e9;
+        }
+
+        .scenario-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .scenario-lead {
+            margin: 0;
+            font-size: 12px;
+            color: #5a6c7d;
+            line-height: 1.7;
+        }
+
+        .detail-section {
+            padding: 10px 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+
+        .detail-section h5 {
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+            font-size: 13px;
+        }
+
+        .detail-section p {
+            margin: 0;
+            font-size: 12px;
+            color: #4f6272;
+            line-height: 1.7;
+        }
+
+        .checklist {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 12px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .checklist li + li {
+            margin-top: 4px;
+        }
+
+        .setting-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .setting-row {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 8px;
+            align-items: start;
+            font-size: 12px;
+        }
+
+        .setting-label {
+            color: #607283;
+            font-weight: bold;
+        }
+
+        .setting-value {
+            color: #2c3e50;
+            word-break: break-word;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .code-header h5 {
+            margin: 0;
+        }
+
+        .code-block {
+            margin: 0;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #ecf2f6;
+            color: #2c3e50;
+            font-size: 11px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .action-btn {
+            flex: 0 0 auto;
+            padding: 7px 10px;
+            font-size: 11px;
+        }
+
+        .test-note {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #5a6c7d;
+            line-height: 1.5;
+        }
+
+        .test-category-header {
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: #f3f7fa;
+            border-left: 4px solid #4b9bd1;
+        }
+
+        .test-category-header h4 {
+            margin: 0 0 4px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .test-category-header .helper-note {
+            margin: 0;
+        }
+
+        .test-link-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .test-status {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #5a6c7d;
+            white-space: pre-line;
+        }
+
+        .single-keyword-schedule-settings,
+        .single-scheduled-watch-settings {
+            padding: 12px;
+            border: 1px solid #d6e2ea;
+            border-radius: 6px;
+            background: #f8fbfd;
+        }
+
+        .single-keyword-schedule-settings .form-group:last-child,
+        .single-scheduled-watch-settings .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .single-keyword-schedule-guide,
+        .single-scheduled-watch-guide {
+            display: grid;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .single-keyword-schedule-guide-card,
+        .single-scheduled-watch-guide-card {
+            padding: 10px 12px;
+            border-left: 3px solid #4a90a4;
+            border-radius: 4px;
+            background: #f1f7fa;
+        }
+
+        .single-keyword-schedule-guide-card--immediate {
+            border-left-color: #6b7f95;
+            background: #f5f7fa;
+        }
+
+        .single-keyword-schedule-guide-title,
+        .single-scheduled-watch-guide-title {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #314b61;
+        }
+
+        .single-keyword-schedule-guide-card p,
+        .single-scheduled-watch-guide-card p,
+        .single-keyword-schedule-note,
+        .single-scheduled-watch-note {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.55;
+            color: #4f6475;
+        }
+
+        .single-keyword-schedule-note,
+        .single-scheduled-watch-note {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            background: #f8fafc;
+        }
+
+        .single-url-subtabs {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .single-url-subtab {
+            flex: 1;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            background: transparent;
+            padding: 8px 6px;
+            color: #52606d;
+            cursor: pointer;
+        }
+
+        .single-url-subtab.active {
+            border-bottom-color: #2563eb;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+
+        .auto-test-result-card {
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid #d6e2ea;
+            border-radius: 8px;
+            background: #f8fbfd;
+            color: #2c3e50;
+            white-space: normal;
+        }
+
+        .two-tier-result-header,
+        .two-tier-result-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .two-tier-result-meta {
+            margin-top: 6px;
+            color: #5a6c7d;
+            font-size: 11px;
+        }
+
+        .two-tier-stop-state {
+            font-weight: bold;
+        }
+
+        .two-tier-stop-state.stopped {
+            color: #16804b;
+        }
+
+        .two-tier-stop-state.running {
+            color: #9a6700;
+        }
+
+        .two-tier-stop-reason {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        .two-tier-result-checks {
+            display: grid;
+            gap: 4px;
+            margin: 10px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .two-tier-result-checks li {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 3px 0;
+            border-top: 1px solid #e5edf2;
+        }
+
+        .two-tier-result-checks .passed strong { color: #16804b; }
+        .two-tier-result-checks .pending strong { color: #9a6700; }
+        .two-tier-result-checks .neutral strong { color: #6b7280; }
+
+        .auto-test-result-card.status-passed {
+            border-color: #8ad4ad;
+            background: #f2fcf6;
+        }
+
+        .auto-test-result-card.status-failed {
+            border-color: #efaaa5;
+            background: #fff7f6;
+        }
+
+        .auto-test-result-card.status-needs-review {
+            border-color: #f0cd75;
+            background: #fffaf0;
+        }
+
+        .auto-test-result-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .auto-test-result-badge {
+            flex: 0 0 auto;
+            padding: 3px 8px;
+            border-radius: 999px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .status-running .auto-test-result-badge { background: #5a6c7d; }
+        .status-passed .auto-test-result-badge { background: #1f8d4d; }
+        .status-failed .auto-test-result-badge { background: #c0392b; }
+        .status-needs-review .auto-test-result-badge { background: #b7791f; }
+
+        .auto-test-result-title {
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .auto-test-result-reason-label {
+            margin-bottom: 3px;
+            color: #5a6c7d;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .auto-test-result-reason {
+            margin-bottom: 10px;
+            font-weight: bold;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .auto-test-result-target,
+        .scheduled-watch-test-scope {
+            margin: 0 0 10px;
+            font-size: 11px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .auto-test-result-target {
+            color: #405466;
+        }
+
+        .scheduled-watch-test-scope {
+            margin-top: 10px;
+            margin-bottom: 0;
+            padding-top: 8px;
+            border-top: 1px solid #dfe6e9;
+            color: #6c7a89;
+        }
+
+        .auto-test-verification-list {
+            display: grid;
+            gap: 5px;
+        }
+
+        .auto-test-verification-item {
+            display: grid;
+            grid-template-columns: 18px minmax(0, auto) minmax(0, 1fr);
+            gap: 6px;
+            align-items: start;
+            padding: 6px 7px;
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+
+        .auto-test-verification-item.is-passed {
+            background: #eaf8ef;
+            color: #176b3a;
+        }
+
+        .auto-test-verification-item.is-failed {
+            background: #fdeceb;
+            color: #a53025;
+        }
+
+        .auto-test-verification-item.is-needs-review {
+            background: #fff3d9;
+            color: #8a5a10;
+        }
+
+        .auto-test-verification-item.is-pending {
+            background: #edf1f4;
+            color: #5a6c7d;
+        }
+
+        .auto-test-verification-icon {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .auto-test-verification-label {
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        .auto-test-verification-reason {
+            word-break: break-word;
+        }
+
+        .auto-test-notification-status {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #dfe6e9;
+            color: #6c7a89;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>PageRecorder</h2>
+        <div>
+            <span class="status-indicator" id="statusIndicator"></span>
+            <span id="statusText">準備完了</span>
+        </div>
+    </div>
+
+    <!-- SWログコピー（即アクセス用） -->
+    <div class="section" style="padding: 8px 15px;">
+        <button id="copySwLogsButton" class="btn-secondary" type="button" style="width: 100%;">SWログをコピー</button>
+        <div class="checkbox-item" style="margin-top: 8px;">
+            <input type="checkbox" id="downloadAiSupportFile">
+            <label for="downloadAiSupportFile">AI判断サポートファイル（選択中の監視モードに適用）</label>
+        </div>
+    </div>
+
+    <div class="section section-collapsible collapsed" id="monitoringExecutionHistorySection" data-collapsible-section data-collapsible-id="monitoringExecutionHistory">
+        <div class="monitoring-execution-history-header">
+            <button class="section-toggle" type="button" data-collapsible-trigger aria-expanded="false" aria-controls="monitoringExecutionHistoryBody">
+                <span class="section-toggle-title">監視実行状況</span>
+                <span class="section-toggle-state">開く</span>
+            </button>
+            <button id="refreshMonitoringExecutionHistoryButton" class="btn-secondary" type="button">更新</button>
+        </div>
+        <div id="monitoringExecutionHistoryBody" class="section-toggle-content" data-collapsible-content hidden>
+            <p class="helper-note">開始から終了までのチェック時刻・実測間隔・取得結果を表示します。Fetchの20秒間隔は「実測間隔」で確認できます。</p>
+            <div id="monitoringExecutionHistoryList" class="helper-note">実行履歴を読み込み中...</div>
+        </div>
+    </div>
+
+    <!-- 監視モード選択 -->
+    <div class="section">
+        <h3>監視モード</h3>
+        <div class="mode-selector">
+            <button class="mode-option" data-mode="single">
+                単一URL監視
+            </button>
+            <button class="mode-option active" data-mode="multiple">
+                複数URL監視
+            </button>
+            <button class="mode-option" data-mode="test">
+                テスト
+            </button>
+        </div>
+        <div class="mode-description" id="modeDescription">
+            複数のURLを同時監視します（通常運用）
+        </div>
+    </div>
+
+    <!-- 単一監視設定（既存UI） -->
+    <div id="singleModeUI" style="display: none;">
+        <div class="single-url-subtabs" role="tablist" aria-label="単一URL監視の機能選択">
+            <button type="button" class="single-url-subtab active" role="tab" aria-selected="true" data-single-url-subtab="keyword">A: キーワード監視</button>
+            <button type="button" class="single-url-subtab" role="tab" aria-selected="false" data-single-url-subtab="scheduled">B: 検索結果・一覧ページ定時監視</button>
+        </div>
+        <div id="singleKeywordPanel" role="tabpanel">
+        <div class="button-group">
+            <button id="quickSourceButton" class="btn-secondary" type="button">即座取得</button>
+        </div>
+        <p class="helper-note">即座取得は監視を開始せず、選択した今回監視するページのスクリーンショットとDOMのouterHTMLを一回保存します。</p>
+        <div class="section">
+            <h3>今回監視するページ</h3>
+            <p class="helper-note">単一URL監視で使う、アクティブタブまたは指定URLを選びます。</p>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="monitorActiveTab" name="monitorType" value="activeTab" checked>
+                        <label for="monitorActiveTab">アクティブタブ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="monitorUrl" name="monitorType" value="url">
+                        <label for="monitorUrl">商品ページURLを指定</label>
+                    </div>
+                </div>
+                <div id="urlContainer" style="display: none; margin-top: 10px;">
+                    <label for="sharedTargetpageEnvironment">環境:サイト名</label>
+                    <div style="display: flex; gap: 8px; margin: 6px 0;">
+                        <select id="sharedTargetpageEnvironment" aria-label="targetpage 環境" style="width: 30%; padding: 8px;">
+                            <option value="test">test</option>
+                            <option value="prod">prod</option>
+                        </select>
+                        <select id="sharedTargetpageSite" aria-label="targetpage サイト名" style="width: 70%; padding: 8px;">
+                            <option value="">すべてのサイト</option>
+                        </select>
+                    </div>
+                    <label for="sharedTargetpageSelect">商品名</label>
+                    <select id="sharedTargetpageSelect" aria-label="共有 targetpage 商品名" style="width: 100%; padding: 8px; margin: 6px 0;">
+                        <option value="">手入力</option>
+                    </select>
+                    <p class="helper-note">選択すると商品URL・監視条件・AutoCartAgent 通知先を設定します。URLまたは監視条件を手入力で変更すると連携設定を解除します。</p>
+                    <p id="targetpageNotificationStatus" class="helper-note" aria-live="polite"></p>
+                    <input type="text" id="targetUrl" list="singleKeywordRecentUrls" placeholder="https://example.com/product" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <datalist id="singleKeywordRecentUrls"></datalist>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>A: キーワード監視（単一URL）</h3>
+            <div class="form-group">
+                <label for="ecSiteSelectKeyword">ECサイトの補完・診断設定</label>
+                <select id="ecSiteSelectKeyword" class="ec-site-dropdown">
+                    <option value="">-- サイトを選択 --</option>
+                </select>
+                <p class="helper-note">選択したサイトは監視条件の自動補完と一括診断に使います。監視URLの開始・停止には影響しません。</p>
+            </div>
+            <div class="subsection">
+                <h4>監視条件</h4>
+                <div class="form-group">
+                    <label for="monitorSelector">監視対象セレクタ</label>
+                    <input type="text" id="monitorSelector" placeholder="例: .content, #main, .price" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        <strong>※</strong> 空欄の場合は全体ページを監視対象とします
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="monitorKeyword">監視キーワード</label>
+                    <input type="text" id="monitorKeyword" placeholder="例: 売り切れ, 在庫あり, エラー" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        <strong>※</strong> 監視対象セレクタ内でこのキーワードの出現/消失を検知します
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>検知モード</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="detectAppear" name="detectMode" value="appear" checked>
+                            <label for="detectAppear">出現検知</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="detectDisappear" name="detectMode" value="disappear">
+                            <label for="detectDisappear">消失検知</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        <strong>出現検知:</strong> キーワードなし→キーワードあり状態で検知<br>
+                        <strong>消失検知:</strong> キーワードあり→キーワードなし状態で検知
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="initialKeywordDetection">
+                            <label for="initialKeywordDetection">監視開始時の即座検知</label>
+                        </div>
+                    </div>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        <strong>有効時:</strong> 監視開始時にキーワードが存在すれば即座に検知・ダウンロード<br>
+                        <strong>用途:</strong> 手動テスト時の確認簡便化（本番運用時は通常無効推奨）
+                    </div>
+                </div>
+
+                <div class="form-group" id="manualTestSettings" style="display: none;">
+                    <h4 style="margin: 15px 0 10px 0; color: #e67e22; font-size: 14px;">🔧 手動テスト用設定（initialKeywordDetection=falseの場合）</h4>
+                    <div class="setting-item" style="margin-bottom: 15px;">
+                        <label for="reloadWaitAfterReload">リロード後の待機時間（秒）:</label>
+                        <input type="number" id="reloadWaitAfterReload" min="1" max="30" value="15" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                            ページリロード後、キーワードチェックまでの待機時間
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection keyword-monitoring-fetch-conditions" id="keywordMonitoringFetchConditions" aria-disabled="false">
+                <h4>取得条件</h4>
+                <div class="form-group">
+                    <label for="monitoringMode">監視方式</label>
+                    <select id="monitoringMode">
+                        <option value="high_frequency" selected>高頻度セッション（1〜60分）</option>
+                        <option value="long_running">長期監視（30分〜8時間）</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="captureMode">取得方式</label>
+                    <select id="captureMode">
+                        <option value="reload" selected>リロード（従来）</option>
+                        <option value="fetch">Fetch（ページをリロードしない）</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="interval">リロード間隔</label>
+                    <select id="interval">
+                        <option value="15">15秒</option>
+                        <option value="20" selected>20秒</option>
+                        <option value="30">30秒</option>
+                        <option value="60">60秒</option>
+                        <option value="custom">カスタム</option>
+                    </select>
+                    <div id="customIntervalContainer" style="display: none;">
+                        <div class="slider-container">
+                            <input type="range" id="customInterval" class="slider" min="5" max="300" value="20">
+                            <div class="slider-value"><span id="customIntervalValue">20</span>秒</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">時間経過時の監視継続時間（今すぐ・予約共通）</label>
+                    <select id="duration">
+                        <option value="60" selected>1分</option>
+                        <option value="180">3分</option>
+                        <option value="300">5分</option>
+                        <option value="600">10分</option>
+                        <option value="1800">30分</option>
+                        <option value="3600">1時間</option>
+                        <option value="14400">4時間</option>
+                        <option value="28800">8時間</option>
+                        <option value="custom">カスタム</option>
+                    </select>
+                    <div id="customDurationContainer" style="display: none;">
+                        <div class="slider-container">
+                            <input type="range" id="customDuration" class="slider" min="1" max="60" value="1">
+                            <div class="slider-value"><span id="customDurationValue">1</span>分</div>
+                        </div>
+                    </div>
+                    <div class="helper-note">今すぐ監視と毎日開始予約のどちらも、時間経過で終了する場合にこの時間を使います。</div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h4>今すぐ監視</h4>
+                <div class="button-group">
+                    <button id="startButton" class="btn-primary" type="button">開始</button>
+                    <button id="stopButton" class="btn-danger" type="button" disabled>停止</button>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h4>停止条件</h4>
+                <div class="form-group">
+                    <label for="stopCondition">停止条件</label>
+                    <select id="stopCondition">
+                        <option value="time" selected>時間経過</option>
+                        <option value="count">取得回数</option>
+                        <option value="custom">カスタム期間</option>
+                        <option value="manual">手動のみ</option>
+                    </select>
+                    <div id="stopCountContainer" style="display: none;">
+                        <div class="slider-container">
+                            <input type="range" id="stopCount" class="slider" min="1" max="50" value="10">
+                            <div class="slider-value"><span id="stopCountValue">10</span>回</div>
+                        </div>
+                    </div>
+                    <div id="stopCustomDurationContainer" style="display: none;">
+                        <div class="form-group">
+                            <label for="stopCustomDuration">期間（分）</label>
+                            <div class="slider-container">
+                                <input type="range" id="stopCustomDuration" class="slider" min="1" max="180" value="60">
+                                <div class="slider-value"><span id="stopCustomDurationValue">60</span>分</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection" id="singleKeywordScheduleSection">
+                <h4>毎日開始予約</h4>
+                <div class="single-keyword-schedule-settings">
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="singleKeywordScheduleEnabled">
+                                <label for="singleKeywordScheduleEnabled">毎日開始予約を有効化</label>
+                            </div>
+                        </div>
+                        <div id="singleKeywordScheduleHint" class="helper-note">予約は「商品ページURLを指定」で保存したURLを新しいタブで開いて開始します。</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="singleKeywordScheduleTime">監視開始時刻</label>
+                        <input type="time" id="singleKeywordScheduleTime" value="11:57" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    </div>
+                    <div class="form-group">
+                        <button id="setSingleKeywordScheduleTimeFromNowButton" class="btn-secondary" type="button">現在時刻から設定</button>
+                        <div class="helper-note">開始時刻を現在＋2分に設定します。</div>
+                    </div>
+                </div>
+                <div class="single-keyword-schedule-guide" aria-label="毎日開始予約の使い方">
+                    <div class="single-keyword-schedule-guide-card">
+                        <span class="single-keyword-schedule-guide-title">予約だけで開始</span>
+                        <p>指定URLと開始時刻を設定して予約をONにすると、毎日その時刻に自動で監視を始めます。<strong>「開始」ボタンは不要です。</strong></p>
+                    </div>
+                    <div class="single-keyword-schedule-guide-card single-keyword-schedule-guide-card--immediate">
+                        <span class="single-keyword-schedule-guide-title">今すぐ開始</span>
+                        <p><strong>「今すぐ監視」の「開始」</strong>を押すと、その場で監視を始めます。</p>
+                    </div>
+                </div>
+                <div class="single-keyword-schedule-note"><strong>重複防止:</strong> 予約時刻に監視が実行中なら、新しい監視は開始しません。</div>
+                <div id="singleKeywordScheduleStatus" class="single-scheduled-watch-summary" role="status">定時監視状態を読み込み中...</div>
+            </div>
+
+        </div>
+
+        </div>
+
+        <div id="singleScheduledPanel" role="tabpanel" hidden>
+        <div class="section scheduled-watch-section" id="singleScheduledWatchSection">
+            <h3>B: 検索結果・一覧ページ監視</h3>
+            <p class="helper-note">キーワード検索結果または商品一覧ページの新規商品URLを監視します。今すぐ監視と毎日開始予約を選べます。検索結果・一覧ページURLが必須です。</p>
+            <div class="single-scheduled-watch-settings" aria-label="今すぐ監視">
+                <h4>今すぐ監視</h4>
+                <div class="form-group">
+                    <label for="singleScheduledWatchImmediateDuration">今すぐ監視の継続時間（分）</label>
+                    <input type="number" id="singleScheduledWatchImmediateDuration" min="1" max="480" value="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">予約のON/OFFに関係なく、指定時間だけ一覧の新規商品を監視します。</div>
+                </div>
+                <div class="button-group">
+                    <button id="startSingleScheduledWatchNowButton" class="btn-primary" type="button">今すぐ開始</button>
+                    <button id="stopSingleScheduledWatchNowButton" class="btn-danger" type="button" disabled>停止</button>
+                </div>
+            </div>
+            <div class="single-scheduled-watch-settings">
+                <h4>毎日開始予約</h4>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="singleScheduledWatchEnabled">
+                            <label for="singleScheduledWatchEnabled">毎日開始予約を有効化</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchSite">サイト</label>
+                    <select id="singleScheduledWatchSite" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <option value="">-- サイトを選択 --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchProfile">検索結果プロファイル</label>
+                    <select id="singleScheduledWatchProfile" disabled style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <option value="">-- プロファイルを選択 --</option>
+                    </select>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        サイトまたはプロファイルを選ぶと、手動調査済みのURLと商品取得セレクタを反映します。
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchUrl">検索結果・一覧ページURL</label>
+                    <input type="url" id="singleScheduledWatchUrl" list="singleScheduledWatchRecentUrls" placeholder="https://example.com/search?q=keyword" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <datalist id="singleScheduledWatchRecentUrls"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchSelector">商品取得セレクタ</label>
+                    <input type="text" id="singleScheduledWatchSelector" placeholder="例: .product-list a" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        商品ページ用ではなく、この検索結果または一覧ページで確認した商品リンク・商品カードのセレクタを設定します。
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchStart">監視開始時刻</label>
+                    <input type="time" id="singleScheduledWatchStart" value="11:57" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchEnd">監視終了時刻</label>
+                    <input type="time" id="singleScheduledWatchEnd" value="12:05" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <button id="setSingleScheduledWatchTimesFromNowButton" class="btn-secondary">現在時刻から設定</button>
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        開始時刻を現在＋2分、終了時刻を現在＋3分に設定します。
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchInterval">リロード間隔（秒）</label>
+                    <input type="number" id="singleScheduledWatchInterval" min="5" max="300" value="30" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        開始〜終了の間、新規商品が無い場合に一覧をリロードして再チェックします（5〜300秒）。
+                    </div>
+                </div>
+            </div>
+            <div class="single-scheduled-watch-guide" aria-label="毎日開始予約の使い方">
+                <div class="single-scheduled-watch-guide-card">
+                    <span class="single-scheduled-watch-guide-title">予約だけで開始</span>
+                    <p>検索結果・一覧ページURL、商品取得セレクタ、開始・終了時刻を設定して予約をONにすると、毎日その時間帯に自動で確認します。<strong>予約確定のボタンは不要です。</strong></p>
+                </div>
+                <div class="single-scheduled-watch-guide-card">
+                    <span class="single-scheduled-watch-guide-title">予約を止める</span>
+                    <p><strong>「毎日開始予約を有効化」</strong>をOFFにすると、次回以降の予約を解除します。</p>
+                </div>
+            </div>
+            <div id="singleScheduledWatchStatus" class="single-scheduled-watch-summary" role="status">定時監視状態を読み込み中...</div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="singleScheduledWatchOpenDetectedUrl">
+                            <label for="singleScheduledWatchOpenDetectedUrl">増加検知時に商品URLを開く</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="singleScheduledWatchNotifyExternal">
+                            <label for="singleScheduledWatchNotifyExternal">他拡張へ通知する</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchExternalExtensionId">通知先拡張機能ID</label>
+                    <input type="text" id="singleScheduledWatchExternalExtensionId" placeholder="例: abcdefghijklmnopabcdefghijklmnop" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        他拡張通知を使う場合のみ設定します。未設定時は通知をスキップします。
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="singleScheduledWatchDiscordChannelId">DiscordチャンネルID</label>
+                    <input type="text" id="singleScheduledWatchDiscordChannelId" placeholder="例: 123456789012345678" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        discord_post_url_monitor に通知する場合は、Webhook設定済みのDiscordチャンネルIDを設定します。
+                    </div>
+                </div>
+                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                    監視開始時刻に一覧を開き、終了時刻まで新規商品URLの出現を待ちます。検知時はログ出力と通知を行います。
+                </div>
+        </div>
+        </div>
+
+        <div class="section">
+            <h3>ダウンロード内容</h3>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="downloadSource" checked>
+                    <label for="downloadSource">ページソース（フル版）</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="downloadSourceWithoutFooter">
+                    <label for="downloadSourceWithoutFooter">ページソース（フッター除外版）</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="downloadScreenshot" checked>
+                    <label for="downloadScreenshot">スクリーンショット</label>
+                </div>
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                <strong>注意:</strong> フル版とフッター除外版は独立して選択可能です。両方選択すると2つのファイルが生成されます。
+            </div>
+        </div>
+
+    </div>
+
+    <div id="testModeUI" style="display: none;">
+        <div class="section">
+            <h3>手動テストハブ</h3>
+            <div class="mode-selector test-scenario-mode-selector">
+                <button class="mode-option test-scenario-mode-option active" data-test-scenario-mode="acceptance" type="button">
+                    A: 受け入れ確認
+                </button>
+                <button class="mode-option test-scenario-mode-option" data-test-scenario-mode="single" type="button">
+                    A: single
+                </button>
+                <button class="mode-option test-scenario-mode-option" data-test-scenario-mode="multiple" type="button">
+                    A: multiple
+                </button>
+                <button class="mode-option test-scenario-mode-option" data-test-scenario-mode="scheduled" type="button">
+                    B/C: 定時監視
+                </button>
+                <button class="mode-option test-scenario-mode-option" data-test-scenario-mode="diagnosis" type="button">
+                    取得方式診断
+                </button>
+            </div>
+            <div id="stockFetchDiagnosisTestPanel" hidden>
+                <div class="test-card">
+                    <h4>取得方式診断（Fetch / DOM / API調査）</h4>
+                    <p class="helper-note">通常監視を変更せず、Fetch HTMLと表示後DOMを比較して取得方式を調査します。</p>
+                    <div class="form-group">
+                        <label for="diagnosisSiteSelect">診断するECサイト</label>
+                        <select id="diagnosisSiteSelect" class="ec-site-dropdown" style="width: 100%; padding: 8px;">
+                            <option value="">-- サイトを選択 --</option>
+                        </select>
+                    </div>
+                    <p class="helper-note"><strong>一括診断の対象:</strong> 選択したECサイトの登録済み在庫あり・なしサンプルです。未選択・サンプル未登録では実行できません。<a href="stock-fetch-diagnosis-site-guide.html" target="_blank" rel="noopener">診断対象サイトを追加する手順</a></p>
+                    <button id="startBulkStockFetchDiagnosisButton" class="btn-primary" type="button" disabled>在庫あり・なしをまとめて診断</button>
+                    <div id="bulkStockFetchDiagnosisHint" class="helper-note" aria-live="polite">ECサイトの選択を確認しています…</div>
+                    <div id="bulkStockFetchDiagnosisResult" class="helper-note" aria-live="polite"></div>
+                </div>
+                <div class="test-card">
+                    <h4>任意ページを診断</h4>
+                    <p class="helper-note">通常監視の対象・条件とは独立して、1ページのFetch HTMLとDOMを比較します。</p>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="diagnosisActiveTab" name="diagnosisTargetType" value="activeTab" checked>
+                                <label for="diagnosisActiveTab">アクティブタブ</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="diagnosisUrl" name="diagnosisTargetType" value="url">
+                                <label for="diagnosisUrl">商品ページURLを指定</label>
+                            </div>
+                        </div>
+                        <div id="diagnosisUrlContainer" hidden style="margin-top: 10px;">
+                            <label for="diagnosisTargetUrl">診断対象URL</label>
+                            <input id="diagnosisTargetUrl" type="url" placeholder="https://example.com/product" style="width: 100%; padding: 8px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="diagnosisSelector">診断セレクタ</label>
+                        <input id="diagnosisSelector" type="text" placeholder="例: .stock-status" style="width: 100%; padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="diagnosisKeyword">在庫ありキーワード</label>
+                        <input id="diagnosisKeyword" type="text" placeholder="例: 在庫あり" style="width: 100%; padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="stockFetchObservedState">画面で確認した在庫状態</label>
+                        <select id="stockFetchObservedState" style="width: 100%; padding: 8px;">
+                            <option value="unknown">不明</option>
+                            <option value="in_stock">在庫あり</option>
+                            <option value="out_of_stock">在庫なし</option>
+                        </select>
+                    </div>
+                    <button id="startStockFetchDiagnosisButton" class="btn-secondary" type="button">Fetch / DOM を診断して保存</button>
+                    <button id="downloadStockApiInvestigationMemoButton" class="btn-secondary" type="button" hidden>DevTools調査メモを保存</button>
+                    <div id="stockFetchDiagnosisResult" class="helper-note" aria-live="polite"></div>
+                </div>
+            </div>
+            <div id="testScenarioPanel">
+            <div class="test-card test-category-header">
+                <h4>A: single 回帰シナリオ（1〜8）</h4>
+                <p class="helper-note">短縮タイミングで、既存のsingle監視の検知・保存・エラー・通知経路を確認します。</p>
+            </div>
+            <div id="testScenarioModeDescription" class="helper-note">
+                `single` 用固定シナリオ
+            </div>
+            <div class="test-note">
+                `multiple に適用` は保存のみ。開始は `multiple テスト開始`
+            </div>
+            <div class="form-group">
+                <label for="testTabSiteSelect">テストサイト</label>
+                <select id="testTabSiteSelect"></select>
+                <div id="testTabSiteNote" class="test-note"></div>
+            </div>
+            <div class="form-group">
+                <label for="testScenarioSelect">テストシナリオ</label>
+                <select id="testScenarioSelect">
+                    <optgroup label="通常監視フロー">
+                        <option value="appear">1. テスト用キーワードの出現を確認する</option>
+                        <option value="disappear">2. 売り切れ表示が消えることを確認する</option>
+                        <option value="initial_detected">3. 在庫ありページで開始直後に一致</option>
+                        <option value="initial_not_detected">4. テスト用キーワードで開始直後は不一致</option>
+                    </optgroup>
+                    <optgroup label="設定・セレクタ診断">
+                        <option value="keyword_missing_check">5. 空キーワード設定の反映と開始前バリデーション確認</option>
+                        <option value="element_not_found_check">6. 異常系: 一致要素なしで error 確認</option>
+                        <option value="pending_error_check">7. 異常系: 無効セレクタで error 確認</option>
+                    </optgroup>
+                    <optgroup label="通知連携">
+                        <option value="gmail_notification_check">8. Gmail 検知通知: 検知 → メール送信確認</option>
+                        <option value="chrome_notification_check">9. 共有Chrome通知を表示する</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="button-group">
+                <button id="startTestScenarioButton" class="btn-primary" type="button">single テスト開始</button>
+            </div>
+            <div id="testTabScenarioSummary" class="test-note" hidden></div>
+            <div id="testTabScenarioStatus" class="test-status" hidden></div>
+            <div class="button-group">
+                <button id="stopTestTabScenarioButton" class="btn-secondary" type="button" hidden>テストを停止</button>
+            </div>
+            <div id="testTabManualCodeSection" class="detail-section" hidden>
+                <div class="code-header">
+                    <h5>手動で在庫状態を変えるコード</h5>
+                    <button id="copyTestTabManualCodeButton" class="btn-secondary action-btn" type="button">コピー</button>
+                </div>
+                <div class="test-note">Service Worker Console に「手動変更の受付時間中です」と出ている20秒の間に、監視タブの DevTools Console で実行してください。</div>
+                <pre id="testTabManualCode" class="code-block"></pre>
+            </div>
+            <div id="initialDetectedAutoTestStatus" class="test-status" hidden></div>
+            <div id="multipleGmailTestStatus" class="test-status" hidden></div>
+            <div id="testBackupSummary" class="test-status">backup: 未保存</div>
+            <div class="test-card">
+                <div class="scenario-detail">
+                    <div>
+                        <div id="testScenarioExecutionMode" class="test-note"></div>
+                        <div id="testScenarioExecutionModeSelector" class="mode-selector" hidden>
+                            <button class="mode-option test-scenario-execution-mode-option" data-test-scenario-execution-mode="auto" type="button">検知の再現: 自動</button>
+                            <button class="mode-option test-scenario-execution-mode-option" data-test-scenario-execution-mode="manual" type="button">検知の再現: 手動</button>
+                        </div>
+                        <h4 id="testScenarioTitle" style="margin: 0 0 8px 0; color: #2c3e50; font-size: 14px;">在庫なしページで継続監視</h4>
+                        <p id="testScenarioDescription" class="scenario-lead">
+                            日産オンラインショップの固定 URL と固定セレクタを `single` に流し込み、手動テストの起点をそろえます。
+                        </p>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5>確認ゴール</h5>
+                        <p id="testScenarioGoal"></p>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5>前提条件</h5>
+                        <ul id="testScenarioPreconditions" class="checklist"></ul>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5>popup設定値</h5>
+                        <div id="testScenarioPopupSettings" class="setting-list"></div>
+                        <div class="test-link-note">
+                            固定設定を反映
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5>注意事項</h5>
+                        <ul id="testScenarioCautions" class="checklist"></ul>
+                    </div>
+
+                    <div id="testScenarioDevtoolsSection" class="detail-section">
+                        <div class="code-header">
+                            <h5 id="testScenarioDevtoolsLabel">ページ状態の確認コード</h5>
+                            <button id="copyDevtoolsCodeButton" class="btn-secondary action-btn" type="button">コピー</button>
+                        </div>
+                        <div id="testScenarioDevtoolsDescription" class="test-note"></div>
+                        <pre id="testScenarioDevtoolsCode" class="code-block"></pre>
+                    </div>
+
+                    <div id="testScenarioExtraDevtoolsSection" class="detail-section">
+                        <div class="code-header">
+                            <h5 id="testScenarioExtraDevtoolsLabel">検知を再現するコード</h5>
+                            <button id="copyExtraDevtoolsCodeButton" class="btn-secondary action-btn" type="button">コピー</button>
+                        </div>
+                        <div id="testScenarioExtraDevtoolsDescription" class="test-note"></div>
+                        <pre id="testScenarioExtraDevtoolsCode" class="code-block"></pre>
+                    </div>
+
+                    <div id="testScenarioAutoReproduceSection" class="detail-section" style="display: none;">
+                        <label>
+                            <input id="testScenarioAutoReproduce" type="checkbox">
+                            自動で再現コードを挿入
+                        </label>
+                        <div class="test-note">ONで開始した場合だけ、リロード後の待機中に各監視タブのDOMを自動変更します。この選択は保存されません。</div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5>期待結果</h5>
+                        <ul id="testScenarioExpectedResults" class="checklist"></ul>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5>保存済みテスト状態</h5>
+                        <div id="testBackupNote" class="test-note">適用前の single 設定を 1 世代退避</div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="applyTestScenarioButton" class="btn-primary" type="button">single に適用</button>
+                        <button id="restoreTestScenarioButton" class="btn-secondary" type="button" disabled>backup を復元</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="test-card" id="twoTierAcceptanceTestPanel">
+                <h4>A: セッション監視の受け入れ確認</h4>
+                <p class="helper-note">実運用と同じセッション方式で、5秒間隔の再読込、1分間の継続・期限切れ、または在庫更新を想定した変化検知を確認します。Gmail・外部拡張通知は送信しません。</p>
+                <p class="test-note"><strong>確認すること:</strong> 永続セッション、対象タブ、監視間隔での再読込予約、DOM変化検知、期限切れ、設定復元。古いページ報告の無視は高頻度セッションだけの確認項目です。</p>
+                <div class="two-tier-acceptance-layout">
+                    <section class="two-tier-acceptance-group" aria-labelledby="highFrequencyAcceptanceTitle">
+                        <div class="two-tier-acceptance-group-header">
+                            <span id="highFrequencyAcceptanceTitle" class="two-tier-acceptance-group-title">高頻度セッション</span>
+                            <span class="two-tier-acceptance-group-meta">5秒ごと / 1分間</span>
+                        </div>
+                        <div class="two-tier-acceptance-grid">
+                            <button class="btn-secondary two-tier-acceptance-start two-tier-acceptance-card" data-two-tier-scenario="high_frequency_single_duration" type="button" aria-label="高頻度・単一URL、継続と期限切れを確認。1 URL、5秒ごと、1分間">
+                                <span class="two-tier-acceptance-card-kicker">継続・期限切れ</span>
+                                <span class="two-tier-acceptance-card-title">単一URL</span>
+                                <span class="two-tier-acceptance-card-meta">1 URL ・ 5秒 ・ 1分間</span>
+                            </button>
+                            <button class="btn-secondary two-tier-acceptance-start two-tier-acceptance-card is-detection" data-two-tier-scenario="high_frequency_single_detect" type="button" aria-label="高頻度・単一URL、変化検知を確認。1 URL、5秒ごと、次回確認で検知">
+                                <span class="two-tier-acceptance-card-kicker">変化検知</span>
+                                <span class="two-tier-acceptance-card-title">単一URL</span>
+                                <span class="two-tier-acceptance-card-meta">1 URL ・ 5秒 ・ 次回確認で検知</span>
+                            </button>
+                            <button class="btn-secondary two-tier-acceptance-start two-tier-acceptance-card" data-two-tier-scenario="high_frequency_multiple_duration" type="button" aria-label="高頻度・複数URL、継続と期限切れを確認。2 URL、5秒ごと、両方1分間">
+                                <span class="two-tier-acceptance-card-kicker">継続・期限切れ</span>
+                                <span class="two-tier-acceptance-card-title">複数URL</span>
+                                <span class="two-tier-acceptance-card-meta">2 URL ・ 5秒 ・ 両方1分間</span>
+                            </button>
+                            <button class="btn-secondary two-tier-acceptance-start two-tier-acceptance-card is-detection" data-two-tier-scenario="high_frequency_multiple_detect" type="button" aria-label="高頻度・複数URL、変化検知を確認。2 URL、1件を検知、1件は1分間">
+                                <span class="two-tier-acceptance-card-kicker">変化検知</span>
+                                <span class="two-tier-acceptance-card-title">複数URL</span>
+                                <span class="two-tier-acceptance-card-meta">2 URL ・ 1件検知 ・ 1件は1分間</span>
+                            </button>
+                        </div>
+                    </section>
+                    <section class="two-tier-acceptance-group" aria-labelledby="longRunningAcceptanceTitle">
+                        <div class="two-tier-acceptance-group-header">
+                            <span id="longRunningAcceptanceTitle" class="two-tier-acceptance-group-title">長期セッション</span>
+                            <span class="two-tier-acceptance-group-meta">30秒ごと / 30分</span>
+                        </div>
+                        <p class="helper-note">専用アラームを作成し、開始時の基準保存後に30秒周期で発火して再読込・DOM確認を行えることを確認します。30分間待つテストではなく、初回アラーム発火後に終了します。</p>
+                        <button class="btn-secondary two-tier-acceptance-start two-tier-acceptance-card is-long-running" data-two-tier-scenario="long_running_single" type="button" aria-label="長期・単一URL。1 URL、30秒ごと、30分">
+                            <span class="two-tier-acceptance-card-kicker">専用アラームの作成・発火</span>
+                            <span class="two-tier-acceptance-card-title">単一URL</span>
+                            <span class="two-tier-acceptance-card-meta">1 URL ・ 30秒ごと ・ 初回アラーム発火で終了</span>
+                        </button>
+                    </section>
+                </div>
+                <div id="twoTierAcceptanceTestStatus" class="test-status" hidden></div>
+            </div>
+            <div id="scheduledWatchTestPanel" hidden>
+                <div class="test-card" id="scheduledWatchTestCard">
+                    <h4>B/C 定時監視テスト</h4>
+                    <p class="scheduled-watch-test-intro">目的に合うカードを選んでください。商品取得テストは取得経路だけを確認し、差分検知テストはCの差分経路を確認します。</p>
+                    <div class="scheduled-watch-test-grid">
+                        <section class="scheduled-watch-test-card" aria-labelledby="singleScheduledWatchTestTitle">
+                            <h5 id="singleScheduledWatchTestTitle">B: 商品取得テスト</h5>
+                            <p class="helper-note">指定URLを一時タブで開き、設定済みの商品取得経路で1回 snapshot を取得します。</p>
+                            <p class="helper-note"><strong>実行・成功に必要:</strong> 指定URLと商品取得セレクタ（単一URL監視の「監視対象セレクタ」）</p>
+                            <p class="helper-note">監視キーワード、検知モード、開始時の即座検知、リロード後待機時間は、この安全テストでは使用しません。</p>
+                            <p class="helper-note">件数セレクタは補助情報です。開始・成功の必須条件ではありません。</p>
+                            <p class="scheduled-watch-test-safety-note">変化検知なし・Gmail送信なし・ダウンロード保存なし</p>
+                            <button id="startSingleScheduledWatchTestButton" class="btn-secondary" type="button">指定URLの商品取得テスト</button>
+                        </section>
+                        <div class="scheduled-watch-test-target">
+                            <label for="scheduledWatchTestSiteSelect">Cサイトを選択</label>
+                            <select id="scheduledWatchTestSiteSelect"><option value="">Cサイトを選択</option></select>
+                        </div>
+                        <section class="scheduled-watch-test-card" aria-labelledby="multiScheduledWatchTestTitle">
+                            <h5 id="multiScheduledWatchTestTitle">C: 商品取得テスト</h5>
+                            <p class="helper-note">選択したCサイトを一時タブで開き、設定済みの商品取得経路で1回 snapshot を取得します。</p>
+                            <p class="scheduled-watch-test-safety-note">変化検知なし・Gmail送信なし・ダウンロード保存なし</p>
+                            <button id="startMultiScheduledWatchTestButton" class="btn-secondary" type="button">選択サイトの商品取得テスト</button>
+                        </section>
+                        <section class="scheduled-watch-test-card" aria-labelledby="scheduledWatchDiffTestTitle">
+                            <h5 id="scheduledWatchDiffTestTitle">C: 差分検知テスト</h5>
+                            <p class="helper-note">初回取得から一時baselineを作り、1件を除外して再取得します。除外したURLを新規URLとして検知し、差分経路を確認します。</p>
+                            <p class="scheduled-watch-test-safety-note">本番baseline・通常監視・ダウンロード保存・Chrome通知・外部拡張通知は行いません。</p>
+                            <label class="scheduled-watch-diff-gmail-option"><input id="scheduledWatchDiffTestCheckGmail" type="checkbox"> Gmail検知送信も確認（ON時だけ検知メールを送信）</label>
+                            <button id="startMultiScheduledWatchDiffTestButton" class="btn-secondary" type="button">差分検知テスト</button>
+                        </section>
+                        <section class="scheduled-watch-test-card" aria-labelledby="scheduledWatchArtifactDiffTestTitle">
+                            <h5 id="scheduledWatchArtifactDiffTestTitle">C: 通常経路・保存付き差分テスト</h5>
+                            <p class="helper-note">テスト専用アラームで、基準PNG・HTML・TXT保存、強制差分、検知PNG・HTML保存を順に確認します。</p>
+                            <p class="scheduled-watch-test-safety-note">本番baseline・通常監視・Gmail・Chrome通知・外部拡張通知・検知URL展開は行いません。</p>
+                            <fieldset class="scheduled-watch-artifact-mode-selector">
+                                <legend>検証方式</legend>
+                                <label class="scheduled-watch-artifact-mode-option"><input type="radio" name="scheduledWatchArtifactDiffTestMode" value="fast" checked><span>短縮検証<br>基準保存後、同じ実行内で差分検知まで完了</span></label>
+                                <label class="scheduled-watch-artifact-mode-option"><input type="radio" name="scheduledWatchArtifactDiffTestMode" value="alarm"><span>実運用再現<br>基準保存後、次の専用アラームtickで差分検知</span></label>
+                            </fieldset>
+                            <button id="startMultiScheduledWatchArtifactDiffTestButton" class="btn-secondary" type="button">保存付き差分テスト</button>
+                        </section>
+                    </div>
+                    <details class="helper-note scheduled-watch-test-criteria">
+                        <summary>判定基準</summary>
+                        <p><strong>成功</strong>: 対象ページの準備完了後、設定済みの商品取得セレクタで1件以上の snapshot を取得できた状態です。その時点の対象ページで設定済み商品取得経路が1件以上を取得できることだけを保証します。通常定時監視、継続的なサイト互換性、差分検知、通知の動作は保証しません。</p>
+                        <p><strong>要確認</strong>: テスト処理は完了しましたが、セレクタ未設定・セレクタ結果0件・snapshot 0件のため、商品取得の成功は保証しません。設定または対象ページを確認してください。</p>
+                        <p><strong>失敗</strong>: URL・実行状態・タブ作成・読込・DOM準備・snapshot取得のいずれかで、テストを完了できませんでした。商品取得の成功は保証しません。実行前提または取得基盤を確認してください。</p>
+                    </details>
+                    <div id="scheduledWatchTestStatus" class="test-status">定時テスト: 未実行</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>手順案内</h3>
+            <ul class="checklist">
+                <li>拡張をリロードしてから開始</li>
+                <li>Service Worker Console を開いてログ確認</li>
+                <li>詳細手順は `tests/docs/README.md` を参照</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 複数監視設定 -->
+    <div id="multipleModeUI">
+        <div class="single-url-subtabs" role="tablist" aria-label="複数URL監視の機能選択">
+            <button type="button" class="single-url-subtab active" role="tab" aria-selected="true" data-multiple-url-subtab="product">A: 商品ページキーワード監視</button>
+            <button type="button" class="single-url-subtab" role="tab" aria-selected="false" data-multiple-url-subtab="list">B: 対象ごとの毎日開始予約</button>
+        </div>
+        <div id="multipleProductWatchPanel" role="tabpanel">
+        <div class="section" id="multipleOperationsSummarySection">
+            <h3>運用サマリー</h3>
+            <div class="monitor-summary">
+                <div class="summary-card summary-card--running">
+                    <span class="summary-label">監視中件数</span>
+                    <span class="summary-value" id="runningMonitorCount">0</span>
+                </div>
+                <div class="summary-card summary-card--stopped">
+                    <span class="summary-label">開始可能件数</span>
+                    <span class="summary-value" id="stoppedMonitorCount">0</span>
+                </div>
+                <div class="summary-card summary-card--disabled">
+                    <span class="summary-label">無効件数</span>
+                    <span class="summary-value" id="disabledMonitorCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="multipleGlobalControlsSection">
+            <h3>全体制御</h3>
+            <div class="button-group">
+                <button id="startAllButton" class="btn-primary">今すぐ一括開始</button>
+                <button id="stopAllButton" class="btn-danger" disabled>今すぐ一括停止</button>
+                <button id="refreshStatusButton" class="btn-secondary">状態更新</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="monitor-list-header">
+                <h3>監視するURL</h3>
+            </div>
+            <div class="monitor-add-controls">
+                <div class="form-group">
+                    <label for="multipleEcSiteSelect">追加時のECサイト（自動入力用）</label>
+                    <select id="multipleEcSiteSelect">
+                        <option value="">-- サイトを選択 --</option>
+                    </select>
+                </div>
+                <button class="add-monitor-btn" id="addMonitorButton" type="button">➕ 対象を追加</button>
+            </div>
+            <div class="monitor-add-controls">
+                <div class="form-group">
+                    <label for="multipleSharedTargetpageEnvironment">共有 targetpage から追加</label>
+                    <div style="display: flex; gap: 8px; margin: 6px 0;">
+                        <select id="multipleSharedTargetpageEnvironment" aria-label="複数URL監視 targetpage 環境" style="width: 100%; padding: 8px;">
+                            <option value="test">test</option>
+                            <option value="prod">prod</option>
+                        </select>
+                    </div>
+                    <select id="multipleSharedTargetpageSelect" aria-label="複数URL監視 共有 targetpage 商品名" style="width: 100%; padding: 8px;">
+                        <option value="">商品を選択</option>
+                    </select>
+                </div>
+                <button class="add-monitor-btn" id="addSharedTargetpageMonitorButton" type="button">➕ 選択した商品を追加</button>
+            </div>
+            <div class="helper-note">共有 targetpage はURL・監視条件・AutoCartAgent通知先を引き継ぎます。すでに監視リストにあるURLは候補に表示しません。</div>
+            <div class="helper-note">選んだサイトは、新規追加画面のセレクタとキーワードを自動入力し、共有 targetpage の商品候補も絞り込みます。既存URL・実行中監視・全体開始停止には影響しません。</div>
+            <div id="monitoringList" class="monitoring-list">
+                <!-- 動的に監視対象が追加される -->
+            </div>
+        </div>
+
+        <div class="section section-collapsible collapsed" data-collapsible-section data-collapsible-id="multipleCommonSettings">
+            <button class="section-toggle" type="button" data-collapsible-trigger aria-expanded="false" aria-controls="multipleCommonSettingsBody">
+                <span class="section-toggle-title">共通監視設定</span>
+                <span class="section-toggle-state">開く</span>
+            </button>
+            <div id="multipleCommonSettingsBody" class="section-toggle-content" data-collapsible-content hidden>
+                <div class="form-group">
+                <label>検知モード</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="multiDetectAppear" name="multiDetectMode" value="appear" checked>
+                        <label for="multiDetectAppear">出現検知</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="multiDetectDisappear" name="multiDetectMode" value="disappear">
+                        <label for="multiDetectDisappear">消失検知</label>
+                    </div>
+                </div>
+                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                    <strong>出現検知:</strong> キーワードなし→キーワードあり状態で検知<br>
+                    <strong>消失検知:</strong> キーワードあり→キーワードなし状態で検知
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="multiInitialKeywordDetection">
+                        <label for="multiInitialKeywordDetection">監視開始時の即座検知</label>
+                    </div>
+                </div>
+                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                    <strong>有効時:</strong> 監視開始時にキーワードが存在すれば即座に検知・ダウンロード<br>
+                    <strong>用途:</strong> 手動テスト時の確認簡便化（本番運用時は通常無効推奨）
+                </div>
+            </div>
+
+            <!-- 🔧 手動テスト用設定 -->
+            <div class="form-group" id="multiManualTestSettings" style="display: none;">
+                <h4 style="margin: 15px 0 10px 0; color: #e67e22; font-size: 14px;">🔧 手動テスト用設定（initialKeywordDetection=falseの場合）</h4>
+                <div class="setting-item" style="margin-bottom: 15px;">
+                    <label for="multiReloadWaitAfterReload">リロード後の待機時間（秒）:</label>
+                    <input type="number" id="multiReloadWaitAfterReload" min="1" max="30" value="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                        ページリロード後、キーワードチェックまでの待機時間
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- 複数監視時間設定 -->
+        <div class="section section-collapsible collapsed" data-collapsible-section data-collapsible-id="multipleTimeSettings">
+            <button class="section-toggle" type="button" data-collapsible-trigger aria-expanded="false" aria-controls="multipleTimeSettingsBody">
+                <span class="section-toggle-title">共通時間設定</span>
+                <span class="section-toggle-state">開く</span>
+            </button>
+            <div id="multipleTimeSettingsBody" class="section-toggle-content" data-collapsible-content hidden>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="multiScheduleEnabled">
+                            <label for="multiScheduleEnabled">毎日開始予約を有効化</label>
+                        </div>
+                    </div>
+                    <h4>毎日一括開始予約</h4>
+                    <div class="helper-note">有効にすると、毎日指定時刻に有効な監視対象を開始します。今すぐ一括監視とは独立しており、予約の保存・解除で実行中の即時監視は停止しません。</div>
+                </div>
+                <div class="form-group">
+                    <label for="multiScheduleTime">監視開始時刻</label>
+                    <input type="time" id="multiScheduleTime" value="11:57" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <button id="setMultipleScheduledMonitoringTimeFromNowButton" class="btn-secondary" type="button">現在時刻から設定</button>
+                    <div class="helper-note">開始時刻を現在＋2分に設定して保存します。</div>
+                </div>
+                <div id="multipleScheduledMonitoringStatus" class="single-scheduled-watch-summary" role="status">定時監視状態を読み込み中...</div>
+                <div class="form-group">
+                <label for="multiMonitoringMode">監視方式</label>
+                <select id="multiMonitoringMode">
+                    <option value="high_frequency" selected>高頻度セッション（1〜60分）</option>
+                    <option value="long_running">長期監視（30分〜8時間）</option>
+                </select>
+            </div>
+                <div class="form-group">
+                    <label for="multiCaptureMode">取得方式</label>
+                    <select id="multiCaptureMode">
+                        <option value="reload" selected>リロード（従来）</option>
+                        <option value="fetch">Fetch（ページをリロードしない）</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                <label for="multiInterval">リロード間隔</label>
+                <select id="multiInterval">
+                    <option value="15">15秒</option>
+                    <option value="20" selected>20秒</option>
+                    <option value="30">30秒</option>
+                    <option value="60">60秒</option>
+                    <option value="custom">カスタム</option>
+                </select>
+                <div id="multiCustomIntervalContainer" style="display: none;">
+                    <div class="slider-container">
+                        <input type="range" id="multiCustomInterval" class="slider" min="5" max="300" value="20">
+                        <div class="slider-value"><span id="multiCustomIntervalValue">20</span>秒</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="multiDuration">時間経過時の監視継続時間（今すぐ・予約共通）</label>
+                <div class="helper-note">今すぐ一括監視と毎日開始予約のどちらも、開始から指定時間後に終了します。</div>
+                    <select id="multiDuration">
+                    <option value="60" selected>1分</option>
+                    <option value="180">3分</option>
+                    <option value="300">5分</option>
+                    <option value="600">10分</option>
+                    <option value="1800">30分</option>
+                    <option value="3600">1時間</option>
+                    <option value="14400">4時間</option>
+                    <option value="28800">8時間</option>
+                    <option value="custom">カスタム</option>
+                </select>
+                <div id="multiCustomDurationContainer" style="display: none;">
+                    <div class="slider-container">
+                        <input type="range" id="multiCustomDuration" class="slider" min="1" max="60" value="1">
+                        <div class="slider-value"><span id="multiCustomDurationValue">1</span>分</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="section section-collapsible collapsed" data-collapsible-section data-collapsible-id="multipleAdvancedManagement">
+            <button class="section-toggle" type="button" data-collapsible-trigger aria-expanded="false" aria-controls="multipleAdvancedManagementBody">
+                <span class="section-toggle-title">詳細・管理</span>
+                <span class="section-toggle-state">開く</span>
+            </button>
+            <div id="multipleAdvancedManagementBody" class="section-toggle-content" data-collapsible-content hidden>
+                <div class="form-group">
+                    <h4>設定管理</h4>
+                    <div class="button-group">
+                        <button id="exportExcelBtn" class="btn-secondary control-btn export-btn" title="監視設定リストをExcelファイルで出力">
+                            📊 Excel出力
+                        </button>
+                        <button id="importExcelBtn" type="button" class="btn-secondary control-btn import-btn" title="Excelファイルから監視設定を一括取込">
+                            📥 Excel取込
+                        </button>
+                    </div>
+                    <div id="excelProgress" style="display: none; margin-top: 10px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 12px; color: #666;">
+                        処理中...
+                    </div>
+                </div>
+                <div class="section" id="scheduledWatchSitesSection">
+                    <h3>C: 複数サイト定期運用</h3>
+                    <p class="helper-note">基本設定は <code>scheduled-watch-sites.json</code> が正本です。サイトごとの取得方式はここで選択して保存できます。</p>
+                    <div class="button-group">
+                        <button id="resyncScheduledWatchSitesButton" class="btn-secondary" type="button">Cアラームを再同期</button>
+                        <button id="refreshScheduledWatchSitesButton" class="btn-secondary" type="button">C状態を更新</button>
+                    </div>
+                    <div id="scheduledWatchResyncResult" class="test-status" hidden></div>
+                    <div id="scheduledWatchSitesList" class="helper-note">読み込み中...</div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="section" id="multipleListWatchSection" role="tabpanel" hidden>
+            <h3>B: 対象ごとの毎日開始予約</h3>
+            <p class="helper-note">検証済みプロファイルを使い、検索結果・一覧ページごとに新商品URLの差分を監視します。今すぐ監視と毎日開始予約は独立しています。</p>
+            <div class="single-scheduled-watch-settings" aria-label="選択対象の今すぐ監視">
+                <h4>今すぐ監視</h4>
+                <div class="form-group">
+                    <label for="multipleListWatchImmediateDuration">監視継続時間（分）</label>
+                    <input id="multipleListWatchImmediateDuration" type="number" min="1" max="480" value="3">
+                    <div class="helper-note">対象一覧で選択した監視対象だけを、開始から指定時間後まで監視します。定時設定の開始・終了時刻は使いません。</div>
+                </div>
+                <div class="button-group">
+                    <button id="startMultipleListWatchNowButton" class="btn-primary" type="button" disabled>選択対象を今すぐ開始</button>
+                    <button id="stopMultipleListWatchNowButton" class="btn-danger" type="button" disabled>選択対象の即時監視を停止</button>
+                </div>
+                <div id="multipleListWatchImmediateStatus" class="single-scheduled-watch-summary" role="status">即時監視: 未実行</div>
+            </div>
+            <h4>対象ごとの毎日開始予約</h4>
+            <div class="form-group">
+                <label for="multipleListWatchSite">サイト</label>
+                <select id="multipleListWatchSite"><option value="">-- サイトを選択 --</option></select>
+            </div>
+            <div class="form-group">
+                <label for="multipleListWatchProfile">検索結果プロファイル</label>
+                <select id="multipleListWatchProfile" disabled><option value="">-- プロファイルを選択 --</option></select>
+            </div>
+            <div class="form-group">
+                <label for="multipleListWatchName">表示名</label>
+                <input id="multipleListWatchName" type="text" placeholder="監視対象名">
+            </div>
+            <div class="form-group">
+                <label for="multipleListWatchUrl">検索結果・一覧ページURL</label>
+                <input id="multipleListWatchUrl" type="url" placeholder="https://example.com/search">
+            </div>
+            <div class="form-group">
+                <label for="multipleListWatchStartTime">開始時刻</label>
+                <input id="multipleListWatchStartTime" type="time" value="11:57">
+                <label for="multipleListWatchEndTime">終了時刻</label>
+                <input id="multipleListWatchEndTime" type="time" value="12:05">
+                <label for="multipleListWatchInterval">間隔（秒）</label>
+                <input id="multipleListWatchInterval" type="number" min="30" value="30">
+            </div>
+            <div class="form-group">
+                <button id="setMultipleListWatchTimesFromNowButton" class="btn-secondary" type="button">現在時刻から設定</button>
+                <div class="helper-note">開始時刻を現在＋2分、終了時刻を現在＋3分に入力します。追加・更新するまで保存されません。</div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-item"><input id="multipleListWatchOpenProductUrl" type="checkbox"><label for="multipleListWatchOpenProductUrl">検知した商品URLを開く</label></div>
+                <div class="checkbox-item"><input id="multipleListWatchNotifyExternal" type="checkbox"><label for="multipleListWatchNotifyExternal">外部拡張へ通知する</label></div>
+                <label for="multipleListWatchExternalId">通知先拡張ID</label>
+                <input id="multipleListWatchExternalId" type="text" placeholder="外部通知を使う場合のみ入力">
+            </div>
+            <div class="button-group">
+                <button id="saveMultipleListWatchButton" class="btn-primary" type="button">一覧監視を追加</button>
+                <button id="cancelMultipleListWatchEditButton" class="btn-secondary" type="button" hidden>編集を取り消す</button>
+            </div>
+            <div id="multipleListWatchScheduleStatus" class="single-scheduled-watch-summary" role="status">定時監視状態を読み込み中...</div>
+            <div id="multipleListWatchList" class="monitoring-list"></div>
+        </div>
+    </div>
+
+    <div class="section" id="gmailNotificationSection">
+        <h3>Gmail 通知</h3>
+        <p class="helper-note">A/B/C の本番検知時に Gmail を送信します。テストメール送信時のみ認証画面が開くことがあります。</p>
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="checkbox" id="gmailNotificationEnabled">
+                <label for="gmailNotificationEnabled">Gmail 通知を有効にする</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="gmailNotificationRecipient">送信先メールアドレス</label>
+            <input type="email" id="gmailNotificationRecipient" placeholder="name@example.com" autocomplete="email" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        </div>
+        <button id="sendGmailTestEmailButton" class="btn-secondary" type="button">テストメール送信</button>
+        <div id="gmailNotificationResult" class="helper-note" role="status" style="margin-top: 8px;">直近の送信結果: なし</div>
+    </div>
+
+    <div class="section">
+        <h3>ログレベル</h3>
+        <div class="log-level-control">
+            <label for="logLevel">ログレベル:</label>
+            <select id="logLevel">
+                <option value="3" selected>INFO | 通常の手動テスト時</option>
+                <option value="4">DEBUG | 切り分けで詳細確認したい時</option>
+                <option value="1">ERROR | 失敗時だけ確認したい時</option>
+            </select>
+            <div class="helper-note">通常は INFO を使い、障害調査時だけ DEBUG、異常だけ追う時は ERROR に切り替えます。</div>
+        </div>
+    </div>
+
+    <div id="message"></div>
+
+    <!-- 監視対象追加モーダル -->
+    <div id="addMonitorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; width: 300px;">
+            <h3>新しい監視対象を追加</h3>
+            <div class="form-group">
+                <label for="modalMonitorName">商品ページ名</label>
+                <input type="text" id="modalMonitorName" placeholder="商品ページ名を入力">
+                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                    一覧で見分けるための商品名ベースの名前です
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="modalMonitorUrl">URL</label>
+                <input type="text" id="modalMonitorUrl" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label for="modalEcSiteHint">サイト名</label>
+                <input type="text" id="modalEcSiteHint" placeholder="サイト未選択" readonly>
+                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                    セレクタとキーワードの自動入力元になるサイト名です
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="modalMonitorSelector">セレクタ（任意）</label>
+                <input type="text" id="modalMonitorSelector" placeholder=".content, #main など">
+            </div>
+            <div class="form-group">
+                <label for="modalMonitorKeyword">監視キーワード</label>
+                <input type="text" id="modalMonitorKeyword" placeholder="監視するキーワード">
+            </div>
+            <div class="form-group">
+                <label>検知モード（個別設定）</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="modalDetectAppear" name="modalDetectMode" value="appear" checked>
+                        <label for="modalDetectAppear">出現検知</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="modalDetectDisappear" name="modalDetectMode" value="disappear">
+                        <label for="modalDetectDisappear">消失検知</label>
+                    </div>
+                </div>
+                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                    共通設定より優先されます
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="modalAddButton" class="btn-primary">追加</button>
+                <button id="modalCancelButton" class="btn-secondary">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv" style="display: none;">
+
+    <!-- 共通UIライブラリ -->
+    <script src="../lib/ui/collapsible.js"></script>
+    <script src="../lib/ui/status-indicator.js"></script>
+    <script src="../lib/ui/batch-controls.js"></script>
+    <!-- 共通ログライブラリ -->
+    <script src="../lib/logging/log-highlight.js"></script>
+    <script src="../lib/logging/sw-log-buffer.js"></script>
+    <script src="../lib/logging/timestamped-console.js"></script>
+    <script src="popup.js"></script>
+    <script src="settings-backup.js"></script>
+</body>
+</html>

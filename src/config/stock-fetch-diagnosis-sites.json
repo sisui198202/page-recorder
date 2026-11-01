@@ -1,0 +1,171 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-10-25T05:01:46.434Z",
+  "sites": [
+    {
+      "id": "aeon",
+      "name": "イオンスタイルオンライン",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://aeonretail.com/product/0/P-4549414389364/P-454941438936401/",
+          "title": "テスト商品A"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://aeonretail.com/product/0/P-2135500000699/P-213550000069901/",
+          "title": "テスト商品B"
+        }
+      ]
+    },
+    {
+      "id": "joshin",
+      "name": "Joshin Web",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://joshinweb.jp/game/25277/4948872311496.html",
+          "title": "ゲーム商品"
+        }
+      ]
+    },
+    {
+      "id": "nissan",
+      "name": "日産オンラインショップ",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://shop.nissan.co.jp/product/detail/6810",
+          "title": "メタルキーリングブロンズ"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://shop.nissan.co.jp/product/detail/6710",
+          "title": "【数量限定】AUTECH ベアマスコット"
+        }
+      ]
+    },
+    {
+      "id": "premiumbandai",
+      "name": "プレミアムバンダイ",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://p-bandai.jp/item/item-1000254999/",
+          "title": "在庫あり商品"
+        }
+      ]
+    },
+    {
+      "id": "sevennet",
+      "name": "セブンネットショッピング",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://7net.omni7.jp/detail/1107382767.html",
+          "title": "ポケモンカードゲームやろうぜ〜っ！ VSTAR！VMAX！激闘編"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://7net.omni7.jp/detail/1107731106.html",
+          "title": "ONE PIECE magazine 特集 ヒロインズ 021"
+        }
+      ]
+    },
+    {
+      "id": "fake-sevennet-local",
+      "name": "【テスト専用】偽セブンネットショッピング（localhost）",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "http://localhost:4173/sevennet/detail/1000000001.html?stock=in",
+          "title": "偽セブンネット 在庫あり"
+        },
+        {
+          "state": "in_stock",
+          "url": "http://localhost:4173/sevennet/detail/1000000005.html?stock=in",
+          "title": "偽セブンネット 在庫あり（複数URL用）"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "http://localhost:4173/sevennet/detail/1000000002.html?stock=out",
+          "title": "偽セブンネット 予約受付終了"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "http://localhost:4173/sevennet/detail/1000000003.html?stock=out",
+          "title": "偽セブンネット 在庫なし"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "http://localhost:4173/sevennet/detail/1000000004.html?stock=out&out=reservation",
+          "title": "偽セブンネット 予約受付終了（複数URL用）"
+        }
+      ]
+    },
+    {
+      "id": "takaratomymall",
+      "name": "タカラトミーモール",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://takaratomymall.jp/shop/g/g4904790180668/",
+          "title": "在庫あり商品"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://takaratomymall.jp/shop/g/g4904810096139/",
+          "title": "在庫なし商品"
+        }
+      ]
+    },
+    {
+      "id": "toysrus",
+      "name": "トイザらスオンライン",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://www.toysrus.co.jp/ja-jp/7961642-10058734.html",
+          "title": "在庫あり商品"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://www.toysrus.co.jp/ja-jp/7961588-10058729.html",
+          "title": "在庫なし商品"
+        }
+      ]
+    },
+    {
+      "id": "yodobashi",
+      "name": "ヨドバシドットコム",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://www.yodobashi.com/product/100000001008333448/",
+          "title": "在庫あり商品"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://www.yodobashi.com/product/100000001003891482/",
+          "title": "在庫なし商品"
+        }
+      ]
+    },
+    {
+      "id": "biccamera",
+      "name": "ビックカメラ.com",
+      "samples": [
+        {
+          "state": "in_stock",
+          "url": "https://www.biccamera.com/bc/item/15225983/",
+          "title": "ポケットモンスター ポケモンカードゲーム ロングカードボックス 30th CELEBRATION ポケモン"
+        },
+        {
+          "state": "out_of_stock",
+          "url": "https://www.biccamera.com/bc/item/15290376/",
+          "title": "ベイブレードX UX-21 ヘルズネザーデッキセット タカラトミー"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+# Sonny Angel Store サイト設定（本拡張機能用）
+# 生成日: 2025-09-16 07:20:00
+# バージョン: 1.0
+# 用途: Summary AutoReload Downloader の監視設定サンプル（キーワード出現/消失検知）
+
+# 本拡張の設定スキーマに準拠
+mode: "single"
+version: "1.7.0"  # 現行の設定バージョン（拡張側で保存時に自動更新されます）
+
+single_config:
+  url: "https://www.sonnyangelstore.com/products/flower-series-2019"
+  settings:
+    # 監視対象（2つ目のボタンを対象 - 手動変更対象）
+    monitorSelector: ".container-flex__sub .side-stikcy #add-to-cart-product-template"
+    monitorKeyword: "カートに入れる"
+    detectMode: "appear"   # "appear" | "disappear"
+
+    # 実行間隔・停止条件
+    interval: 20            # 秒
+    stopCondition: "manual" # "manual" | "time" | "count"
+    # stopCount: 3          # stopCondition=count の場合に使用
+    # duration: 60          # stopCondition=time の場合に使用（秒）
+
+    # 取得オプション
+    downloadSource: true
+    downloadSourceWithoutFooter: true
+    downloadScreenshot: true
+
+    # 即座検知オプション
+    initialKeywordDetection: true
+
+# スキーマ整合性のために定義（単一モードでは空でOK）
+multiple_configs: []
+
+metadata:
+  site_name: "www.sonnyangelstore.com"
+  site_type: "shopify_store"
+  created_by: "claude_code"
+  created_date: "2025-09-16"
+  last_modified: "2025-09-16"
+  schema: "monitoring-config/1.0"
+
+notes: |
+  - このYAMLは拡張機能の実際のストレージへ自動反映されるものではなく、設定例です。
+  - ソニーエンジェルストアは「カートに入れる」ボタンが2つ存在するため、表示中の要素を優先選択するロジックが実装されています。
+  - セレクタは表示中のボタン（.container-flex__sub .side-stikcy内）を対象としています。
+  - キーワード検知は要素の innerText ベースです。表記ゆれ（全角/半角、句読点、スペース）に注意してください。
+  - 商品ページでは在庫切れ時に「売り切れ」ボタンに変化するため、消失検知モードも有効です。
+  - 監視間隔は20秒に設定（サーバー負荷を考慮）。
+
+# ソニーエンジェルストアの「カートに入れる」ボタン構造
+button_structure:
+  description: "商品ページには「カートに入れる」ボタンが2つ存在します"
+
+  button_1:
+    location: "PC表示用（メインエリア）"
+    container: ".u-hidden--pc .c-buy"
+    selector: "#add-to-cart-product-template"
+    classes: "c-button-cart js-cart-add"
+    visibility: "PC表示時のみ表示"
+    purpose: "メインの購入ボタン"
+
+  button_2:
+    location: "サイドバー固定表示（監視対象）"
+    container: ".container-flex__sub .side-stikcy .c-buy"
+    selector: "#add-to-cart-product-template"
+    classes: "c-button-cart js-cart-add"
+    visibility: "常時表示（スクロール時も固定）"
+    purpose: "固定サイドバーの購入ボタン（監視対象）"
+
+  technical_details:
+    - "両ボタンは同じID（#add-to-cart-product-template）を持つ"
+    - "同じクラス（c-button-cart js-cart-add）を持つ"
+    - "同じテキスト（カートに入れる）を持つ"
+    - "拡張機能は2つ目のボタン（サイドバー固定）を監視対象とする"
+    - "手動でテキストを変更する場合は2つ目のボタンを対象とする"
+
+  monitoring_strategy:
+    - "querySelectorAll()で全要素を取得"
+    - "2つ目の要素（インデックス1）を優先選択"
+    - "表示中の要素を確実に特定するため"
+
+# 代替セレクタ候補（必要に応じて使用）
+alternative_selectors:
+  - "#add-to-cart-product-template"  # IDのみ（複数要素の可能性）
+  - ".c-button-cart.js-cart-add"     # クラスベース
+  - "a[href='javascript:void(0);'].c-button-cart"  # より具体的なセレクタ
+
+# 監視対象URL例
+example_urls:
+  - "https://www.sonnyangelstore.com/products/hippersdreamingseries"
+  - "https://www.sonnyangelstore.com/products/regular-series"
+  - "https://www.sonnyangelstore.com/products/animal-series"
+
+# キーワードバリエーション
+keyword_variations:
+  appear:
+    - "カートに入れる"
+    - "カートに追加"
+  disappear:
+    - "売り切れ"
+    - "在庫切れ"
+    - "SOLD OUT"
+
+# CSSセレクタ仕様に関する重要な調査結果（2025-10-01）
+css_selector_specification:
+  title: "属性セレクタ内のスペース処理"
+
+  summary: |
+    CSS Selectors Level 3の仕様により、属性セレクタ内で属性名と演算子の間の
+    空白文字（スペース）は無視されます。
+
+  specification:
+    source: "CSS Selectors Level 3"
+    rule: "属性名と演算子（=, ~=, |=, ^=, $=, *=）の間の空白は無視される"
+
+  examples:
+    equivalent_selectors:
+      - selector: "[class*='value']"
+        description: "スペースなし（推奨）"
+      - selector: "[class *='value']"
+        description: "スペース1つ"
+      - selector: "[class  *='value']"
+        description: "スペース2つ"
+      - selector: "[class   *='value']"
+        description: "スペース3つ"
+    note: "上記はすべて同じセレクタとして解釈されます"
+
+  verification_results:
+    date: "2025-10-01"
+    browser: "Google Chrome"
+    test_selector: "a[id*='add-to-cart'][class   *='c-button-cart']"
+    test_results:
+      - test: "ブラウザコンソールでのquerySelectorAll()実行"
+        result: "✅ 成功 - NodeList(2)を返す"
+      - test: "Chrome拡張Content Scriptでの実行"
+        result: "✅ 成功 - 2個の要素を検知"
+      - test: "スペースなしバージョンとの比較"
+        result: "✅ 同一の結果"
+
+  practical_implications:
+    - "セレクタにスペースが含まれていてもエラーにならない"
+    - "意図しないスペースが入力されても正常動作する"
+    - "ただし、可読性・保守性の観点からスペースなしを推奨"
+    - "セレクタ検証時にスペースの有無を気にする必要はない"
+
+  invalid_cases:
+    note: "以下のケースは構文エラーになります"
+    examples:
+      - case: "改行を含むセレクタ"
+        example: "[class\n*='value']"
+        error: "SyntaxError: Invalid or unexpected token"
+      - case: "属性名内のスペース"
+        example: "[class name*='value']"
+        error: "Invalid selector"
+
+  recommendations:
+    for_users: "セレクタ入力時はスペースなしが推奨されますが、誤ってスペースを入れても動作します"
+    for_developers: "UIでスペースを自動削除する必要はありません（CSS仕様で処理されます）"
+    for_testing: "セレクタテスト時にスペースの有無による差異を考慮する必要はありません"

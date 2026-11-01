@@ -1,0 +1,1 @@
+/Users/user/Work/buy/Target/_common/docs/ECサイト構造自動取得手順.md

@@ -1,0 +1,134 @@
+# =====================================
+# Chrome Extension Project .gitignore
+# =====================================
+
+# -----------------
+# OS files
+# -----------------
+.DS_Store
+Thumbs.db
+
+# -----------------
+# IDE / Editor
+# -----------------
+.vscode/
+.idea/
+
+# -----------------
+# AI Tools
+# -----------------
+.claude/*
+!.claude/
+!.claude/rules/
+!.claude/rules/**
+.serena/
+
+# -----------------
+# Node.js
+# -----------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# -----------------
+# Logs
+# -----------------
+*.log
+logs/
+
+# -----------------
+# Temporary
+# -----------------
+*.tmp
+*.temp
+tmp/
+temp/
+*_tmp.html
+
+# -----------------
+# Environment / Secrets
+# -----------------
+.env
+.env.*
+credentials.json
+secret.json
+keys.json
+client_secret_YOUR_CLIENT_ID.apps.googleusercontent.com.json
+backup/
+
+# -----------------
+# Build Outputs
+# -----------------
+dist/
+build/
+release/
+out/
+
+*.zip
+*.crx
+
+# -----------------
+# Test Outputs
+# -----------------
+coverage/
+test-results/
+playwright-report/
+
+# -----------------
+# Browser Profile Data
+# -----------------
+profiles/
+chrome-profile/
+chrome-data/
+user-data/
+
+# -----------------
+# Generated Files
+# -----------------
+pdf/*.pdf
+audio/*.m4a
+
+# -----------------
+# macOS shell backups
+# -----------------
+*.swp
+*.bak
+
+# -----------------
+# IDE / Editor (additional)
+# -----------------
+.cursor/
+
+# -----------------
+# Download outputs
+# -----------------
+download/aeon/
+download/discord_url_logs/
+download/Export/
+
+# -----------------
+# Generated PDFs
+# -----------------
+tests/pdf/
+plan/pdf/
+docs/pdf/
+src/config/pdf/
+.steering/**/pdf/
+PRD/pdf/*.pdf
+docs/mermeid/pdf/*.pdf
+plan/docs/pdf/*.pdf
+
+# -----------------
+# JSON backups
+# -----------------
+*.json.backup
+
+# -----------------
+# Reference materials (personal)
+# -----------------
+参考/
+
+# 公開版
+/.pagerecorder-public
+client_secret_*.json

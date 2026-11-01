@@ -1,0 +1,1 @@
+/Users/user/Documents/Summary/01_開発環境/30_Chrome拡張/docs/在庫取得方式調査_HTML比較とAIスキル設計.md

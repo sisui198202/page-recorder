@@ -1,0 +1,273 @@
+{
+  "version": "1.0.0",
+  "targets": [
+    {
+      "id": "aeon-test",
+      "environment": "test",
+      "siteId": "aeon",
+      "name": "イオンスタイルオンライン ホームコーディ フリーザーバッグ 動植物柄",
+      "title": "ホームコーディ フリーザーバッグ 動植物柄",
+      "state": "in_stock",
+      "url": "https://aeonretail.com/product/0/P-4549414389364/P-454941438936401/",
+      "monitor": {
+        "selector": "#ctl00_ContentPlaceHolder1_lbCartAdd",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "aeon",
+        "entryId": "aeon-test"
+      }
+    },
+    {
+      "id": "aeon-test-out-of-stock",
+      "environment": "test",
+      "siteId": "aeon",
+      "name": "イオンスタイルオンライン ポケモンカードゲーム スカーレット＆バイオレット 強化拡張パック ポケモンカード151 20パックセット (4521329346045 × 20) お一人さま1点限り",
+      "title": "ポケモンカードゲーム スカーレット＆バイオレット 強化拡張パック ポケモンカード151 20パックセット (4521329346045 × 20) お一人さま1点限り",
+      "state": "out_of_stock",
+      "url": "https://aeonretail.com/product/0/P-2135500000699/P-213550000069901/",
+      "monitor": {
+        "selector": "#ctl00_ContentPlaceHolder1_lbCartAdd",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "aeon",
+        "entryId": "aeon-test-out-of-stock"
+      }
+    },
+    {
+      "id": "nissan-test-in_stock-05e0e4b00db5",
+      "environment": "test",
+      "siteId": "nissan",
+      "name": "日産オンラインショップ メタルキーリングブロンズ",
+      "title": "メタルキーリングブロンズ",
+      "state": "in_stock",
+      "url": "https://shop.nissan.co.jp/product/detail/6810",
+      "monitor": {
+        "selector": "#form1 dl.clearfix:not(.kakaku):not(.parallel) dd",
+        "keyword": "在庫あり",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "nissan",
+        "entryId": "nissan-test-in_stock-05e0e4b00db5"
+      }
+    },
+    {
+      "id": "nissan-test-in_stock-19cb46ea2814",
+      "environment": "test",
+      "siteId": "nissan",
+      "name": "日産オンラインショップ Nissan SKYLINE 2000 Turbo intercooler RS-X",
+      "title": "Nissan SKYLINE 2000 Turbo intercooler RS-X",
+      "state": "in_stock",
+      "url": "https://shop.nissan.co.jp/product/detail/6824",
+      "monitor": {
+        "selector": "#form1 dl.clearfix:not(.kakaku):not(.parallel) dd",
+        "keyword": "在庫あり",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "nissan",
+        "entryId": "nissan-test-in_stock-19cb46ea2814"
+      }
+    },
+    {
+      "id": "nissan-test-out_of_stock-5784570b6fd7",
+      "environment": "test",
+      "siteId": "nissan",
+      "name": "日産オンラインショップ 日産野球部 フライトタグ",
+      "title": "日産野球部 フライトタグ",
+      "state": "out_of_stock",
+      "url": "https://shop.nissan.co.jp/product/detail/6876",
+      "monitor": {
+        "selector": "#form1 dl.clearfix:not(.kakaku):not(.parallel) dd",
+        "keyword": "在庫あり",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "nissan",
+        "entryId": "nissan-test-out_of_stock-5784570b6fd7"
+      }
+    },
+    {
+      "id": "sevennet-test",
+      "environment": "test",
+      "siteId": "sevennet",
+      "name": "セブンネットショッピング ポケモンカードゲームやろうぜ〜っ！ VSTAR！VMAX！激闘編",
+      "title": "ポケモンカードゲームやろうぜ〜っ！ VSTAR！VMAX！激闘編",
+      "state": "in_stock",
+      "url": "https://7net.omni7.jp/detail/1107382767.html",
+      "monitor": {
+        "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "sevennet-test"
+      }
+    },
+    {
+      "id": "sevennet-test-out-of-stock",
+      "environment": "test",
+      "siteId": "sevennet",
+      "name": "セブンネットショッピング ONE PIECE magazine 特集 ヒロインズ 021",
+      "title": "ONE PIECE magazine 特集 ヒロインズ 021",
+      "state": "out_of_stock",
+      "url": "https://7net.omni7.jp/detail/1107731106.html",
+      "monitor": {
+        "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "sevennet-test-out-of-stock"
+      }
+    },
+    {
+      "id": "sevennet-test-out_of_stock-68652041ef68",
+      "environment": "test",
+      "siteId": "sevennet",
+      "name": "セブンネットショッピング ONE PIECEカードゲーム 神の支配【OP-18】 - 通販｜セブンネットショッピング",
+      "title": "ONE PIECEカードゲーム 神の支配【OP-18】 - 通販｜セブンネットショッピング",
+      "state": "out_of_stock",
+      "url": "https://7net.omni7.jp/detail/2190053982.html",
+      "monitor": {
+        "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "sevennet-test-out_of_stock-68652041ef68"
+      }
+    },
+    {
+      "id": "sevennet-test-in_stock-9aebd895cc27",
+      "environment": "test",
+      "siteId": "sevennet",
+      "name": "セブンネットショッピング ポケモンカードゲームで身につく！ロジカルシンキング - 通販｜セブンネットショッピング",
+      "title": "ポケモンカードゲームで身につく！ロジカルシンキング - 通販｜セブンネットショッピング",
+      "state": "in_stock",
+      "url": "https://7net.omni7.jp/detail/1107387446.html",
+      "monitor": {
+        "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "sevennet-test-in_stock-9aebd895cc27"
+      }
+    },
+    {
+      "id": "sevennet-prod",
+      "environment": "prod",
+      "siteId": "sevennet",
+      "name": "セブンネットショッピング 星のカービィ！も〜れつプププアワー！ １",
+      "title": "星のカービィ！も〜れつプププアワー！ １",
+      "state": "in_stock",
+      "url": "https://7net.omni7.jp/detail/1107725877.html",
+      "monitor": {
+        "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "sevennet-prod"
+      }
+    },
+    {
+      "id": "sevennet-prod-1107731106",
+      "environment": "prod",
+      "siteId": "sevennet",
+      "name": "セブンネットショッピング ONE PIECE magazine 特集 ヒロインズ 021",
+      "title": "ONE PIECE magazine 特集 ヒロインズ 021",
+      "state": "out_of_stock",
+      "url": "https://7net.omni7.jp/detail/1107731106.html",
+      "monitor": {
+        "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "externalExtensionId": "mekapiojlijbjlnolgibpcppihpcacia"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "sevennet-prod-1107731106"
+      }
+    },
+    {
+      "id": "toysrus-test-out-of-stock",
+      "environment": "test",
+      "siteId": "toysrus",
+      "name": "トイザらスオンライン ポケモンカードゲーム ダメカンケース ピカチュウ大集合",
+      "title": "ポケモンカードゲーム ダメカンケース ピカチュウ大集合",
+      "state": "out_of_stock",
+      "url": "https://www.toysrus.co.jp/ja-jp/7681704-768170400.html",
+      "monitor": {
+        "selector": "button.add-to-cart[data-add-to-cart]",
+        "keyword": "カートに入れる",
+        "detectMode": "appear"
+      },
+      "notification": {
+        "openProductUrl": true,
+        "notifyOtherExtensions": true,
+        "siteId": "toysrus",
+        "discordChannelId": "1512256548897030234",
+        "externalExtensionId": "ibmbjnemcpminbmenepldhockemdpomc"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "toysrus",
+        "entryId": "toysrus-test-out-of-stock"
+      }
+    }
+  ]
+}

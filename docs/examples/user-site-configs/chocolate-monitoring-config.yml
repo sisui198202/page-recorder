@@ -1,0 +1,46 @@
+# Chocolate Inc. サイト設定（本拡張機能用）
+# 生成日: 2025-08-11 15:02:03
+# バージョン: 1.0
+# 用途: Summary AutoReload Downloader の監視設定サンプル（キーワード出現/消失検知）
+
+# 本拡張の設定スキーマに準拠
+mode: "single"
+version: "1.7.0"  # 現行の設定バージョン（拡張側で保存時に自動更新されます）
+
+single_config:
+  url: "https://shop.chocolate-inc.com/products/snsn02015"
+  settings:
+    # 監視対象
+    旧_monitorSelector: "#ProductSubmitButton-template--19719530741978__main"
+    新_monitorSelector: "#ProductSubmitButton-template--20131086794970__main"
+    カート有_monitorKeyword: "カートに追加する"
+    カート無_monitorKeyword: "売り切れ"
+    detectMode: "appear"   # "appear" | "disappear"
+
+    # 実行間隔・停止条件
+    interval: 1             # 秒
+    stopCondition: "count"  # "manual" | "time" | "count"
+    stopCount: 3            # stopCondition=count の場合
+    # duration: 60          # stopCondition=time の場合に使用（秒）
+
+    # 取得オプション
+    downloadSource: true
+    downloadSourceWithoutFooter: false
+    downloadScreenshot: true
+
+# スキーマ整合性のために定義（単一モードでは空でOK）
+multiple_configs: []
+
+metadata:
+  site_name: "shop.chocolate-inc.com"
+  site_type: "shopify_store"
+  created_by: "claude_code"
+  created_date: "2025-08-11"
+  last_modified: "2025-08-11"
+  schema: "monitoring-config/1.0"
+
+notes: |
+  - このYAMLは拡張機能の実際のストレージへ自動反映されるものではなく、設定例です。
+  - セレクタにテンプレートIDが含まれるため、サイト更新で値が変わる場合があります。
+    安定しない場合はクラスや属性セレクタ（例: [data-action="add-to-cart"]）への置換を検討してください。
+  - キーワード検知は要素の innerText ベースです。表記ゆれ（全角/半角、句読点、スペース）に注意してください。

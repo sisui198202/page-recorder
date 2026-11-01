@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "name": "PageRecorder - ページ記録・分析ツール",
+  "version": "1.8.0",
+  "minimum_chrome_version": "120",
+  "description": "ページのHTML・スクリーンショットを定期取得・保存。キーワード変化検知、パターン分析用データ収集ツール。",
+  "host_permissions": [
+    "<all_urls>",
+    "https://www.googleapis.com/*"
+  ],
+  "permissions": [
+    "notifications",
+    "alarms",
+    "scripting",
+    "downloads",
+    "downloads.shelf",
+    "tabs",
+    "storage",
+    "activeTab",
+    "offscreen",
+    "cookies",
+    "identity"
+  ],
+  "oauth2": {
+    "client_id": "YOUR_CLIENT_ID.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.send"
+    ]
+  },
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  "action": {
+    "default_popup": "src/ui/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/config/ec-sites.json"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

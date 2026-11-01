@@ -1,0 +1,1014 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-10-19",
+  "sites": [
+    {
+      "id": "joshin",
+      "name": "Joshin Web",
+      "patterns": [
+        "joshinweb.jp",
+        "joshin.jp",
+        "shop.joshin.co.jp"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "div.main_button_base.main_button_style01 a",
+            "a[href*='cart_button2']",
+            "a[href*='cart_button']"
+          ],
+          "soldOut": [
+            ".mainbox dt font b",
+            ".sold-out",
+            ".out-of-stock"
+          ],
+          "soldOutText": [
+            "完売いたしました",
+            "在庫切れ",
+            "品切れ",
+            "売り切れ",
+            "入荷待ち",
+            "販売終了",
+            "商談中"
+          ],
+          "inStock": [
+            "div.main_button_base.main_button_style01"
+          ],
+          "inStockText": [
+            "カートに入れる",
+            "在庫あり"
+          ],
+          "negotiation": {
+            "selector": ".main_button_style01a a",
+            "text": "商談中"
+          }
+        },
+        "cartPage": {
+          "proceedButton": [
+            "input[type='button'][onclick*=\"cartSubmit('next')\"]",
+            "input[value*='次へ']"
+          ],
+          "urlPattern": "/game/cart/"
+        },
+        "shippingPage": {
+          "nextButton": [
+            "input[type='button'][onclick*=\"cartSubmit('next')\"]",
+            "input[value*='次へ']"
+          ],
+          "urlPattern": "/root/cart/"
+        },
+        "paymentPage": {
+          "paymentMethod": "input[type='radio'][name='PAY_TYPE'][value='100']",
+          "nextButton": [
+            "input[type='button'][onclick*=\"cartSubmit('next')\"]",
+            "input[value*='次へ']"
+          ],
+          "urlPattern": "/root/cart/"
+        },
+        "checkoutPage": {
+          "confirmButton": [
+            "input[type='button'][value='購入する']"
+          ],
+          "urlPattern": "/root/cart/"
+        },
+        "success": [
+          ".cart-added"
+        ],
+        "successText": [
+          "カートに追加しました",
+          "カートに入れました"
+        ],
+        "login": {
+          "email": "input[name=\"LGID\"]",
+          "password": "input[name=\"PSWD\"]",
+          "agreeCheckbox": "input[name=\"DOUI\"]",
+          "loginButton": "input[name=\"SUV\"]",
+          "loginForm": "input[name=\"LGID\"]"
+        }
+      },
+      "loginUrl": "https://joshinweb.jp/root/login/",
+      "loginUrls": [
+        "https://joshinweb.jp/root/login/"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "nissan",
+      "name": "日産オンラインショップ",
+      "patterns": [
+        "shop.nissan.co.jp"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "#add input[type='image']",
+            "input[alt='カートに入れる']",
+            "input[src='/images/products/btn_addcart.gif']"
+          ],
+          "soldOut": [
+            "#form1 dl.clearfix:not(.kakaku):not(.parallel) dd"
+          ],
+          "soldOutText": [
+            "在庫なし"
+          ],
+          "inStock": [
+            "#form1 dl.clearfix:not(.kakaku):not(.parallel) dd"
+          ],
+          "inStockText": [
+            "在庫あり"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": "a[href*='loginstatuscheck']"
+        },
+        "checkoutPage": {},
+        "login": {
+          "email": "input[name='email01']",
+          "password": "input[name='password01']",
+          "loginButton": "input[type='image'][alt='ログイン']",
+          "loginForm": "input[name='email01']"
+        }
+      },
+      "loginUrl": "https://shop.nissan.co.jp/login",
+      "loginUrls": [
+        "https://shop.nissan.co.jp/login",
+        "https://shop.nissan.co.jp/shopping/login"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000,
+      "monitorProfiles": [
+        {
+          "id": "product-default",
+          "selector": "#form1 dl.clearfix:not(.kakaku):not(.parallel) dd",
+          "keyword": "在庫あり",
+          "detectMode": "appear"
+        }
+      ]
+    },
+    {
+      "id": "aeon",
+      "name": "イオンスタイルオンライン",
+      "patterns": [
+        "aeonretail.com",
+        "gate.aeon.com"
+      ],
+      "scheduledWatchProfiles": [
+        {
+          "id": "pokemon-card-game",
+          "name": "ポケモンカードゲーム",
+          "url": "https://aeonretail.com/Form/Product/ProductList.aspx?gspsk=%e3%83%9d%e3%82%b1%e3%83%a2%e3%83%b3%e3%82%ab%e3%83%bc%e3%83%89%e3%82%b2%e3%83%bc%e3%83%a0&psc=0",
+          "productSelector": "li.product__item",
+          "itemCount": "span.product__search--num",
+          "screenshotTarget": "span.product__search--num",
+          "scrollOffset": false,
+          "isDefault": true
+        }
+      ],
+      "monitorProfiles": [
+        {
+          "id": "product-default",
+          "selector": "#ctl00_ContentPlaceHolder1_lbCartAdd",
+          "keyword": "カートに入れる",
+          "detectMode": "appear"
+        }
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "#ctl00_ContentPlaceHolder1_lbCartAdd",
+            ".button__addcart",
+            ".btnCart a.button__primary"
+          ],
+          "cartButtonModal": "#ctl00_ContentPlaceHolder1_lbAddCartNormal",
+          "soldOut": [
+            "#stock_errormessage_name-tag1",
+            "#errorMessage"
+          ],
+          "soldOutText": [
+            "在庫なし",
+            "選択した商品は在庫切れです"
+          ],
+          "inStock": [
+            "#ctl00_ContentPlaceHolder1_lbCartAdd",
+            ".button__addcart.btn-color--orange"
+          ],
+          "inStockText": [
+            "カートに追加",
+            "カートに入れる"
+          ],
+          "pageRecorderMonitor": {
+            "selector": "#ctl00_ContentPlaceHolder1_upUpdatePanel .product__cart",
+            "keyword": "カートに入れる"
+          },
+          "viewCartLink": "a[href='/Form/Order/CartList.aspx']"
+        },
+        "cartPage": {
+          "proceedButton": [
+            "a[onclick*=\"checkIsAeonMember\"]",
+            "a[href*=\"lbNext\"]",
+            "a.js-stickyViewAnchor"
+          ]
+        },
+        "ownerDecisionPage": {
+          "iaeonButton": "a[href*='lbLoginWithIAeonId']"
+        },
+        "oidcLogin": {
+          "userId": ".c-input__input",
+          "password": ".c-pwd-input__input",
+          "loginBtn": ".p-login__form-footer button.c-button"
+        },
+        "shippingPage": {
+          "nextButton": ".btn-color--orange.js-stickyViewAnchor"
+        },
+        "paymentPage": {
+          "nextButton": ".area_btn--stack a.btn-Base-contents.btn-color--orange"
+        },
+        "checkoutPage": {}
+      },
+      "loginUrl": "https://aeonretail.com/Form/Login.aspx",
+      "loginUrls": [
+        "https://aeonretail.com/Form/Login.aspx",
+        "https://gate.aeon.com/"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "toysrus",
+      "name": "トイザらスオンライン",
+      "patterns": [
+        "toysrus.co.jp",
+        "www.toysrus.co.jp"
+      ],
+      "scheduledWatchProfiles": [
+        {
+          "id": "pokemon-card-game",
+          "name": "ポケモンカードゲーム",
+          "productSelector": ".product-tile-wrapper",
+          "itemCount": ".grid-header span.result-count",
+          "screenshotTarget": ".grid-header",
+          "scrollOffset": 400,
+          "isDefault": true
+        }
+      ],
+      "monitorProfiles": [
+        {
+          "id": "product-default",
+          "selector": "button.add-to-cart[data-add-to-cart]",
+          "keyword": "カートに入れる",
+          "detectMode": "appear"
+        }
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button.btn-info.add-to-cart[data-add-to-cart]",
+            "button.add-to-cart[data-add-to-cart]"
+          ],
+          "soldOut": [
+            "button.btn-secondary.back-in-store",
+            "button.back-in-store"
+          ],
+          "soldOutText": [
+            "在庫なし"
+          ],
+          "inStock": [
+            "button.add-to-cart[data-add-to-cart]"
+          ],
+          "inStockText": [
+            "カートに入れる"
+          ],
+          "cartIcon": "a.cart-link",
+          "minicartQuantity": ".minicart-quantity"
+        },
+        "cartPage": {
+          "proceedButton": "a.checkout-btn.btn-info",
+          "emptyCart": ".cart-empty"
+        },
+        "login": {
+          "email": "input#login-form-login",
+          "password": "input#login-form-password",
+          "loginButton": "button[type='submit'].btn-info",
+          "loginForm": "form[name='login-form']"
+        },
+        "shippingPage": {
+          "nextButton": "button.submit-shipping[type='submit']"
+        },
+        "paymentPage": {
+          "paypayTab": "a.nav-link.paypay-tab",
+          "paypayTabItem": "li[data-method-id='Pay_Pay']",
+          "nextButton": "button.submit-payment[type='submit']"
+        },
+        "checkoutPage": {
+          "confirmButton": "button#placeOrderBtn"
+        }
+      },
+      "loginUrl": "https://www.toysrus.co.jp/ja-jp/login/",
+      "loginUrls": [
+        "https://www.toysrus.co.jp/ja-jp/login/"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "yodobashi",
+      "name": "ヨドバシドットコム",
+      "patterns": [
+        "yodobashi.com",
+        "www.yodobashi.com",
+        "order.yodobashi.com"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "#js_m_submitRelated",
+            "#js_h_submitRelated",
+            "#js_buyBoxMain a.yBtnText",
+            ".subInfoArea .yBtnStack a"
+          ],
+          "soldOut": [
+            "#js_buyBoxMain .salesInfo p",
+            ".subInfoArea .salesInfo p"
+          ],
+          "soldOutText": [
+            "予定数の販売を終了しました"
+          ],
+          "inStock": [
+            "#js_m_submitRelated",
+            "#js_h_submitRelated",
+            ".subInfoArea .yBtnStack a"
+          ],
+          "inStockText": [
+            "カートに入れる",
+            "ショッピングカートに入れる"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": [
+            "a[href='/yc/shoppingcart/index.html?next=true'].btnRed"
+          ],
+          "nextButton": [
+            "#sc_i_buy"
+          ],
+          "quantityInput": "input[name='ordinaryProducts[0].amount']",
+          "urlPattern": "/yc/shoppingcart/"
+        },
+        "checkoutPage": {
+          "securityCode": "input[name='creditCard.securityCode']",
+          "confirmButton": [
+            ".js_c_order"
+          ],
+          "urlPattern": "/yc/order/confirm/"
+        },
+        "login": {
+          "email": "#memberId",
+          "password": "#password",
+          "loginButton": "#js_i_login0",
+          "welcomeLoginButton": "#js_i_login2"
+        },
+        "success": [],
+        "successText": []
+      },
+      "loginUrl": "https://order.yodobashi.com/yc/login/index.html",
+      "loginUrls": [
+        "https://order.yodobashi.com/yc/login/index.html",
+        "https://order.yodobashi.com/yc/login/order/index.html"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 20000
+    },
+    {
+      "id": "amiami",
+      "name": "あみあみオンライン",
+      "patterns": [
+        "amiami.jp",
+        "www.amiami.jp",
+        "secure.amiami.jp"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button.cart_in_button.trigger__cart_in_button",
+            "#g_recaptcha",
+            "button.cart_in_button"
+          ],
+          "soldOut": [],
+          "soldOutText": [
+            "売切",
+            "品切れ",
+            "完売"
+          ],
+          "inStock": [
+            "button.cart_in_button",
+            "#g_recaptcha"
+          ],
+          "inStockText": [
+            "カートにいれる",
+            "在庫品》"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": [
+            "div.btn_login#btn_login"
+          ],
+          "urlPattern": "/top/cart/cart"
+        },
+        "shippingPage": {
+          "matomeSelect": "select",
+          "nextButton": [
+            "button:contains('購入手続きへ進む')"
+          ],
+          "urlPattern": "/top/cart/asp/cart_matome.asp"
+        },
+        "paymentPage": {
+          "paymentCod": "input[type='radio'][value='代金引換']",
+          "paymentCredit": "input[type='radio']:nth-of-type(4)",
+          "agreementCheckbox": "input[type='checkbox']",
+          "nextButton": [
+            "button:contains('確認画面へ進む')"
+          ],
+          "urlPattern": "/top/register/asp/entry.asp"
+        },
+        "checkoutPage": {
+          "pointInput": "input[type='text']",
+          "messageTextarea": "textarea",
+          "confirmButton": [
+            "button:contains('注文する')"
+          ],
+          "urlPattern": "/top/register/asp/entry2.asp"
+        },
+        "login": {
+          "email": "input[type='text']",
+          "password": "input[type='password']",
+          "loginButton": "button:contains('ログイン')",
+          "loginForm": "input[type='text']"
+        },
+        "success": [],
+        "successText": []
+      },
+      "loginUrl": "https://secure.amiami.jp/top/member/asp/",
+      "loginUrls": [
+        "https://secure.amiami.jp/top/member/asp/"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "takaratomymall",
+      "name": "タカラトミーモール",
+      "patterns": [
+        "takaratomymall.jp"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button.tt_button4-1:not([disabled])"
+          ],
+          "soldOut": [
+            "button.tt_button4-1[disabled]"
+          ],
+          "soldOutText": [
+            "×在庫なし"
+          ],
+          "inStock": [
+            "#spec_stock_msg"
+          ],
+          "inStockText": [
+            "◎在庫あり"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": [
+            "button.tt_button4-4[name='common']"
+          ],
+          "urlPattern": "/shop/cart/cart.aspx"
+        },
+        "shippingPaymentPage": {
+          "paymentMethod": "input[type='radio']",
+          "nextButton": [
+            "button.tt_button4-4[name='submit.x']"
+          ],
+          "urlPattern": "/shop/order/method.aspx"
+        },
+        "checkoutPage": {
+          "confirmButton": [
+            "button.tt_button4-4[name='submit.x']"
+          ],
+          "modifyButton": "button.tt_button1-8",
+          "urlPattern": "/shop/order/estimate.aspx"
+        },
+        "login": {
+          "email": "input[name='uid']",
+          "password": "input[name='pwd']",
+          "loginButton": "button[type='submit'][name='order']",
+          "loginForm": "input[name='uid']",
+          "loggedInIndicator": ".tt_Uname"
+        },
+        "success": [],
+        "successText": []
+      },
+      "loginUrl": "https://takaratomymall.jp/shop/customer/menu.aspx",
+      "loginUrls": [
+        "https://takaratomymall.jp/shop/customer/menu.aspx"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "chocolate-inc",
+      "name": "Chocolate Inc",
+      "patterns": [
+        "shop.chocolate-inc.com"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button.add-to-cart",
+            ".add-to-cart-btn"
+          ],
+          "soldOut": [],
+          "soldOutText": [
+            "在庫なし",
+            "売り切れ"
+          ],
+          "inStock": [
+            "button.product-form__submit"
+          ],
+          "inStockText": [
+            "カートに追加する"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": [],
+          "urlPattern": "/cart",
+          "productSelectors": [
+            ".cart-item",
+            ".product-form",
+            "[data-product-id]",
+            ".cart__items",
+            ".cart-content"
+          ]
+        },
+        "checkoutPage": {}
+      },
+      "cartTransition": {
+        "pattern": "manual",
+        "cartUrl": "/cart",
+        "delays": {
+          "default": 1500,
+          "cartPageLoad": 2500,
+          "optimized": {
+            "minDelay": 1000,
+            "maxDelay": 3000,
+            "initialDelay": 1500
+          }
+        },
+        "verification": {
+          "enabled": true,
+          "maxWaitTime": 5000,
+          "checkInterval": 100
+        }
+      },
+      "waitTime": 2500,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "doragonstar",
+      "name": "ドラゴンスター",
+      "patterns": [
+        "dorasuta.jp"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "a[id^='cart_']"
+          ],
+          "cartContainer": "div.cart",
+          "cartCount": "div#cart_count.cart_count",
+          "soldOut": [],
+          "soldOutText": [
+            "在庫切れ"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": [
+            "a#pay.btn3"
+          ],
+          "urlPattern": "/cart"
+        },
+        "shippingPage": {
+          "deliveryMethod": "input[name='delivery_id']",
+          "deliveryYupack": "input#delivery_id2[value='2']",
+          "arrivalFlagNone": "input#set_none[name='arrival_flag'][value='0']",
+          "nextButton": [
+            "a#confirm.btn3"
+          ],
+          "backButton": "a#cart.btn3.bc3-1",
+          "urlPattern": "/pay"
+        },
+        "paymentPage": {
+          "paymentMethod": "input[name='payment_id']",
+          "paymentPaypay": "input#payment_id14[value='14']",
+          "paymentCredit": "input#payment_id40[value='40']",
+          "nextButton": [
+            "a#complete.btn3"
+          ],
+          "backButton": "a#delivery.btn3.bc3-1",
+          "urlPattern": "/pay"
+        },
+        "checkoutPage": {
+          "confirmButton": [],
+          "urlPattern": null,
+          "note": "外部決済サービス（GMOイプシロン/りそなPayResortPlus）へリダイレクト"
+        },
+        "login": {
+          "email": "input#login_id",
+          "password": "input#login_password",
+          "loginButton": "a#login.btn3",
+          "loginForm": "input#login_id"
+        },
+        "success": [],
+        "successText": [
+          "商品をカートに追加しました",
+          "ご注文ありがとうございます",
+          "注文完了"
+        ]
+      },
+      "loginUrl": "https://dorasuta.jp/member/login",
+      "loginUrls": [
+        "https://dorasuta.jp/member/login"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "shimamura",
+      "name": "しまむらオンラインショップ",
+      "patterns": [
+        "shop-shimamura.com",
+        "www.shop-shimamura.com",
+        "auth.shop-shimamura.com"
+      ],
+      "selectors": {
+        "productListPage": {
+          "productLinks": ".card__link",
+          "pagination": ".pager__item",
+          "urlPattern": "/disp/itemlist/"
+        },
+        "productPage": {
+          "cartButton": [
+            ".catalogue__stock .stock__item .evt-add-cart:not([disabled])"
+          ],
+          "cartButtonAction": {
+            "method": "click",
+            "elementType": "button",
+            "hasOnclick": false
+          },
+          "soldOut": [
+            ".catalogue__stock .stock__item"
+          ],
+          "soldOutText": [
+            "在庫なし"
+          ],
+          "inStock": [
+            ".catalogue__stock .stock__item"
+          ],
+          "inStockText": [
+            "予約受付中"
+          ],
+          "excludeSelectors": {
+            "domAreas": [
+              ".related-products",
+              ".ad-banner",
+              ".reviews",
+              ".faq",
+              "footer",
+              "header",
+              "[style*='display:none']",
+              "[hidden]",
+              "dialog[modal]"
+            ],
+            "stockPatterns": [
+              "店舗限定在庫",
+              "レビュー内の在庫あり",
+              "再入荷通知",
+              "script内データ"
+            ],
+            "pricePatterns": []
+          }
+        },
+        "cartPage": {
+          "proceedButton": [
+            "button:has-text(\"ご購入手続きへ進む\")"
+          ],
+          "urlPattern": "/cart/"
+        },
+        "shippingPaymentPage": {
+          "confirmButton": [
+            "button:has-text(\"ご注文内容を確認する\")"
+          ],
+          "deliveryOption": "input[name=\"delivery_method\"]",
+          "paymentOption": "input[name=\"payment_method\"]",
+          "urlPattern": "/order/order-info/"
+        },
+        "checkoutPage": {
+          "confirmButton": [
+            "button:has-text(\"ご注文を確定する\")"
+          ],
+          "urlPattern": "/order/order_confirm/"
+        },
+        "login": {
+          "email": "input[placeholder=\"メールアドレスを入力してください\"]",
+          "password": "input[placeholder=\"パスワードを入力してください\"]",
+          "loginButton": "button:has-text(\"ログイン\")",
+          "loginForm": "form"
+        },
+        "errorDetection": {
+          "sessionExpired": "https://auth.shop-shimamura.com/login",
+          "outOfStock": ".catalogue__stock .stock__item .evt-add-cart[disabled]",
+          "saleModal": "dialog[modal]"
+        },
+        "success": [],
+        "successText": [
+          "カートに追加しました",
+          "ご注文ありがとうございます"
+        ]
+      },
+      "loginUrl": "https://auth.shop-shimamura.com/login",
+      "loginUrls": [
+        "https://auth.shop-shimamura.com/login"
+      ],
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000
+    },
+    {
+      "id": "sevennet",
+      "name": "セブンネットショッピング",
+      "patterns": [
+        "7net.omni7.jp",
+        "omni7.jp",
+        "auth.7id.omni7.jp"
+      ],
+      "scheduledWatchProfiles": [
+        {
+          "id": "pokemon-card-game",
+          "name": "ポケモンカードゲーム",
+          "productSelector": "a[href*=\"/detail/\"]",
+          "itemCount": null,
+          "isDefault": true
+        }
+      ],
+      "monitorProfiles": [
+        {
+          "id": "product-default",
+          "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+          "keyword": "カートに入れる",
+          "detectMode": "appear"
+        }
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button.add-to-cart.c-btnCartin.js-add-to-cart:not([disabled])"
+          ],
+          "soldOut": [
+            "button.add-to-cart.c-btnCartin.js-add-to-cart[disabled]"
+          ],
+          "soldOutText": [
+            "販売終了"
+          ],
+          "inStock": [
+            "button.add-to-cart.c-btnCartin.js-add-to-cart"
+          ],
+          "inStockText": [
+            "カートに入れる"
+          ],
+          "quantitySelect": ".js-productInfoBtnWrap select, select[aria-label*=\"数量\"]"
+        },
+        "cartPage": {
+          "proceedButton": [],
+          "urlPattern": "/cart"
+        },
+        "shippingPage": {
+          "nextButton": [],
+          "urlPattern": "/checkout/process?stage=shipping"
+        },
+        "paymentPage": {
+          "nextButton": [
+            "button.submit-payment[type=\"submit\"][name=\"submit\"][value=\"submit-payment\"]"
+          ],
+          "urlPattern": "/checkout/process?stage=payment"
+        },
+        "checkoutPage": {
+          "confirmButton": [],
+          "urlPattern": "/checkout/process?stage=placeOrder"
+        },
+        "login": {
+          "email": [
+            "input[name=\"sveIdInput\"]",
+            "input#input-01",
+            "input[autocomplete=\"username\"]"
+          ],
+          "password": "input[type=\"password\"]",
+          "loginButton": "",
+          "loginForm": ""
+        },
+        "success": [],
+        "successText": [
+          "カートに入れました"
+        ]
+      },
+      "loginUrl": "https://7net.omni7.jp/login",
+      "loginUrls": [
+        "https://7net.omni7.jp/login",
+        "https://auth.7id.omni7.jp/v2/auth-request"
+      ],
+      "executionPolicy": {
+        "allowAutoFinalOrderClick": false,
+        "finalOrderRequiresUserConfirmation": true,
+        "allowAuto3DSecureSubmit": false,
+        "threeDSecureRequiresManualCompletion": true,
+        "allowAutoCaptchaSolve": false,
+        "allowAutoOtpInput": false
+      },
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000,
+      "notes": {
+        "authentication": "7iD OAuth2.0 PKCE認証（別ドメイン: auth.7id.omni7.jp）",
+        "cartProceed": "カートページの「ご注文手続きへ進む」はlink要素（buttonではない）",
+        "checkoutFlow": "SPAライクなURL構造（stageパラメータで各ステップを管理）"
+      }
+    },
+    {
+      "id": "fake-sevennet-local",
+      "name": "【テスト専用】偽セブンネットショッピング（localhost）",
+      "patterns": [
+        "localhost",
+        "127.0.0.1"
+      ],
+      "monitorProfiles": [
+        {
+          "id": "product-default",
+          "selector": "button.add-to-cart.c-btnCartin.js-add-to-cart",
+          "keyword": "カートに入れる",
+          "detectMode": "appear"
+        }
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button.add-to-cart.c-btnCartin.js-add-to-cart:not([disabled])"
+          ],
+          "soldOut": [
+            "button.add-to-cart.c-btnCartin.js-add-to-cart[disabled]"
+          ],
+          "soldOutText": [
+            "予約受付終了",
+            "在庫なし"
+          ],
+          "inStock": [
+            "button.add-to-cart.c-btnCartin.js-add-to-cart"
+          ],
+          "inStockText": [
+            "カートに入れる"
+          ]
+        }
+      },
+      "notes": {
+        "testOnly": true,
+        "purpose": "tests/fake-ec/server.js で配信するローカル手動テスト専用サイト"
+      }
+    },
+    {
+      "id": "premiumbandai",
+      "name": "プレミアムバンダイ",
+      "patterns": [
+        "p-bandai.jp"
+      ],
+      "selectors": {
+        "productPage": {
+          "cartButton": [
+            "button#buy_side:not([disabled])",
+            "button#buy:not([disabled])",
+            "button.pb24-item-btn__cart:not([disabled])"
+          ],
+          "soldOut": [
+            ".pb24-item-main__icon img[alt=\"予約終了\"]",
+            "button#buy[disabled]",
+            "button#buy_side[disabled]",
+            "button.pb24-item-btn__cart[disabled]"
+          ],
+          "soldOutText": [
+            "予約終了",
+            "在庫がありません"
+          ],
+          "inStock": [
+            "button#buy:not([disabled])",
+            "button#buy_side:not([disabled])",
+            "button.pb24-item-btn__cart:not([disabled])"
+          ],
+          "inStockText": [
+            "予約する",
+            "カートに入れる"
+          ],
+          "pageRecorderMonitor": {
+            "selector": "div.cart",
+            "keyword": "予約する"
+          }
+        },
+        "loginPage": {
+          "idInput": [
+            "input[type=\"text\"][name*=\"id\"]",
+            "input[type=\"email\"]"
+          ],
+          "passwordInput": [
+            "input[type=\"password\"]"
+          ],
+          "loginButton": [
+            "button:has-text(\"ログインする\")",
+            "input[type=\"submit\"][value*=\"ログイン\"]"
+          ]
+        },
+        "cartPage": {
+          "proceedButton": [
+            "a:has-text(\"注文手続きへ\")"
+          ],
+          "emptyCart": [
+            ".empty-cart-message"
+          ]
+        },
+        "checkoutPage": {
+          "finalOrderButton": [
+            "button:has-text(\"決済手続きへ進む\")",
+            "button:has-text(\"注文を確定する\")"
+          ],
+          "termsCheckbox": [
+            "input[type=\"checkbox\"][name*=\"terms\"]",
+            "input[type=\"checkbox\"][name*=\"agree\"]"
+          ]
+        }
+      },
+      "stockDetection": {
+        "rules": [
+          {
+            "priority": 1,
+            "type": "selector",
+            "selector": "button#buy_side[disabled]",
+            "result": "out_of_stock"
+          },
+          {
+            "priority": 2,
+            "type": "selector",
+            "selector": "button#buy[disabled]",
+            "result": "out_of_stock"
+          },
+          {
+            "priority": 3,
+            "type": "selector",
+            "selector": "button#buy_side:not([disabled])",
+            "result": "in_stock"
+          },
+          {
+            "priority": 4,
+            "type": "selector",
+            "selector": "button#buy:not([disabled])",
+            "result": "in_stock"
+          }
+        ]
+      },
+      "executionPolicy": {
+        "allowAutoFinalOrderClick": false,
+        "finalOrderRequiresUserConfirmation": true,
+        "allowAuto3DSecureSubmit": false,
+        "threeDSecureRequiresManualCompletion": true
+      },
+      "loginRequired": true,
+      "waitTime": 2000,
+      "retryCount": 3,
+      "retryInterval": 1000,
+      "notes": {
+        "cartButton": "予約商品は「予約する」、通常商品は「カートに入れる」（後者は未検証）",
+        "shippingPayment": "配送設定と支払い方法選択は同一ページ（order_info）で行われる"
+      }
+    }
+  ],
+  "globalSettings": {
+    "defaultWaitTime": 2000,
+    "maxRetries": 3,
+    "showNotificationOnSuccess": true,
+    "showNotificationOnFailure": true,
+    "defaultCheckInterval": 5000
+  }
+}

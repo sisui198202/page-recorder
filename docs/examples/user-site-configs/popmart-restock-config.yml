@@ -1,0 +1,114 @@
+# POPMART サイト設定（本拡張機能用）
+# 生成日: 2025-09-25 16:45:30
+# バージョン: 1.0
+# 用途: Summary AutoReload Downloader の監視設定サンプル（再入荷通知監視）
+
+# 本拡張の設定スキーマに準拠
+mode: "single"
+version: "1.7.0"  # 現行の設定バージョン（拡張側で保存時に自動更新されます）
+
+single_config:
+  url: "https://www.popmart.com/jp/products/5737"
+  settings:
+    # 監視対象（最適化セレクター適用）
+    monitorSelector: ".index_actionContainer__EqFYe > div[class*=\"index_btn__\"]"
+    monitorKeyword: "再入荷を通知"
+    detectMode: "disappear"   # "appear" | "disappear"
+
+    # 実行間隔・停止条件
+    interval: 30             # 秒
+    stopCondition: "count"  # "manual" | "time" | "count"
+    stopCount: 3            # stopCondition=count の場合
+    # duration: 3600        # stopCondition=time の場合に使用（秒）
+
+    # 取得オプション
+    downloadSource: true
+    downloadSourceWithoutFooter: false
+    downloadScreenshot: true
+
+# スキーマ整合性のために定義（単一モードでは空でOK）
+multiple_configs: []
+
+metadata:
+  site_name: "www.popmart.com"
+  site_type: "popmart_store"
+  product_id: "5737"
+  product_category: "collectible_figures"
+  created_by: "claude_code"
+  created_date: "2025-09-25"
+  last_modified: "2025-09-25"
+  schema: "monitoring-config/1.0"
+  region: "japan"
+
+notes: |
+  - このYAMLは拡張機能の実際のストレージへ自動反映されるものではなく、設定例です。
+  - POPMARTの「再入荷を通知」ボタンが消失した時点（再入荷時）を検知します。
+  - セレクタには最適化された階層指定を使用：直接子要素 + 部分一致で安定性向上
+  - 監視間隔は30秒に設定（サーバー負荷配慮）。商品人気度に応じて調整可能です。
+  - 検知モード「disappear」: 「再入荷を通知」→「カートに追加」等への変化を検知
+  - 日本語商品ページ（/jp/）に対応した設定例です。
+
+selector_details: |
+  使用セレクター詳細:
+  - `.index_actionContainer__EqFYe > div[class*="index_btn__"]`
+  - 直接子要素指定（>）で精度向上
+  - ボタンクラスの部分一致で安定性確保
+  - CSSモジュール変更への耐性を持つ最適化設計
+
+example_scenarios: |
+  検知シナリオ例:
+  1. 初期状態: 「再入荷を通知」ボタンが表示
+  2. 再入荷発生: ボタンが「カートに追加」に変化（消失検知）
+  3. 検知成功: スクリーンショット・HTMLダウンロード実行
+  4. 監視終了: 設定回数（3回）検知後に自動停止
+
+selector_alternatives: |
+  代替セレクター（安定性順）:
+  1. 現在推奨: .index_actionContainer__EqFYe > div[class*="index_btn__"]
+  2. 完全指定: .index_btn__w5nKF.index_black__RgEgP.index_btnFull__F7k90
+  3. 部分一致: div[class*="index_actionContainer__"] > div[class*="index_btn__"]
+  4. シンプル: .index_actionContainer__EqFYe div
+
+selector_verification:
+  date: "2025-10-01"
+  verification_status: "✅ 検証完了"
+
+  correct_selector: '.index_actionContainer__EqFYe > div[class*="index_btn__"]'
+  error_selector: '.index_actionContainer__EqFYe > div[class*=\"index_btn__\"]'
+
+  warning: |
+    ⚠️ 重要: YAMLファイルの表記をそのままUI入力に使用しないこと
+    - YAML表記: monitorSelector: ".selector > div[class*=\"value\"]"
+    - UI入力: .selector > div[class*="value"]
+    - バックスラッシュエスケープ（\"）は不要・使用禁止
+
+  browser_console_test:
+    status: "✅ 成功"
+    tests:
+      - pattern: 'クォートあり'
+        result: '✅ NodeList(1) - 要素検出成功'
+      - pattern: 'クォートなし'
+        result: '✅ NodeList(1) - 要素検出成功'
+      - pattern: '親要素のみ'
+        result: '✅ NodeList(1) - 要素検出成功'
+      - pattern: '子要素のみ'
+        result: '✅ NodeList(1) - 要素検出成功'
+
+  actual_test:
+    status: "✅ 成功"
+    mode: "消失検知モード"
+    result: "キーワード消失検知成功"
+    details:
+      - "40秒待機後にキーワードチェック実行"
+      - "「再入荷を通知」の消失を検知"
+      - "actualText: '関西987' (キーワード不存在確認)"
+      - "スクリーンショット保存完了"
+      - "HTMLソース保存完了"
+      - "監視処理完了 - 正常終了"
+
+  error_case:
+    description: "YAMLエスケープ表記を直接コピーした場合"
+    error_selector: '.index_actionContainer__EqFYe > div[class*=\"index_btn__\"]'
+    error_log: 'セレクタ".index_actionContainer__EqFYe > div[class*=\\index_btn__\\]"に一致する要素が見つかりません'
+    cause: "バックスラッシュエスケープ（\\\"）が混入"
+    solution: "UIで手動再入力（バックスラッシュを含めない）"

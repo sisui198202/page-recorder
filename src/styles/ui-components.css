@@ -1,0 +1,13 @@
+.shared-ui-status {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.shared-ui-status--idle { background-color: #6c757d; }
+.shared-ui-status--running { background-color: #28a745; }
+.shared-ui-status--disabled { background-color: #6c757d; }
+.shared-ui-status--error { background-color: #dc3545; }
+.shared-ui-status--scheduled { background-color: #2563eb; }

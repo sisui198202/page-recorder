@@ -1,0 +1,124 @@
+{
+  "version": "1.0.0",
+  "sites": [
+    {
+      "id": "aeon-pokemon",
+      "name": "イオンスタイルオンライン ポケモンカードゲーム",
+      "enabled": true,
+      "url": "https://aeonretail.com/Form/Product/ProductList.aspx?gspsk=%e3%83%9d%e3%82%b1%e3%83%a2%e3%83%b3%e3%82%ab%e3%83%bc%e3%83%89%e3%82%b2%e3%83%bc%e3%83%a0&psc=0",
+      "selectors": {
+        "productLinks": "li.product__item",
+        "itemCount": "span.product__search--num",
+        "screenshotTarget": "span.product__search--num",
+        "scrollOffset": false
+      },
+      "baselineTime": "16:21",
+      "schedules": [
+        {
+          "startTime": "16:22",
+          "endTime": "16:23",
+          "intervalSeconds": 30
+        },
+        {
+          "startTime": "16:24",
+          "endTime": "16:26",
+          "intervalSeconds": 60
+        }
+      ],
+      "notification": {
+        "openProductUrl": false,
+        "notifyOtherExtensions": true,
+        "siteId": "aeon",
+        "discordChannelId": "1512256504668094514",
+        "externalExtensionId": "ibmbjnemcpminbmenepldhockemdpomc"
+      },
+      "fetchMode": {
+        "enabled": false,
+        "fallbackToDom": true,
+        "diagnosisCode": null,
+        "lastDiagnosedAt": null
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "aeon",
+        "entryId": "aeon-pokemon"
+      }
+    },
+    {
+      "id": "toysrus-pokemon",
+      "name": "トイザらスオンライン ポケモンカードゲーム",
+      "enabled": true,
+      "url": "https://www.toysrus.co.jp/ja-jp/pokemoncardgame/",
+      "selectors": {
+        "productLinks": ".product-tile-wrapper",
+        "itemCount": ".grid-header span.result-count",
+        "screenshotTarget": ".grid-header",
+        "scrollOffset": 400
+      },
+      "cloudflareProtection": {
+        "enabled": true,
+        "challengeWaitTime": 30000,
+        "autoForeground": true
+      },
+      "domWaitTimeout": 35000,
+      "baselineTime": "09:42",
+      "schedules": [
+        {
+          "startTime": "09:38",
+          "endTime": "09:39",
+          "intervalSeconds": 30
+        },
+        {
+          "startTime": "09:40",
+          "endTime": "09:42",
+          "intervalSeconds": 60
+        }
+      ],
+      "notification": {
+        "openProductUrl": true,
+        "notifyOtherExtensions": true,
+        "siteId": "toysrus",
+        "discordChannelId": "1512256548897030234",
+        "externalExtensionId": "ibmbjnemcpminbmenepldhockemdpomc"
+      },
+      "fetchMode": {
+        "enabled": false,
+        "fallbackToDom": true,
+        "diagnosisCode": null,
+        "lastDiagnosedAt": null
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "toysrus",
+        "entryId": "toysrus-pokemon"
+      }
+    },
+    {
+      "id": "7net-pokemon",
+      "name": "セブンネットショッピング ポケモンカードゲーム",
+      "enabled": true,
+      "url": "https://7net.omni7.jp/search?q=%E3%83%9D%E3%82%B1%E3%83%A2%E3%83%B3%E3%82%AB%E3%83%BC%E3%83%89%E3%82%B2%E3%83%BC%E3%83%A0&ageGroup=2",
+      "selectors": {
+        "productLinks": "a[href*=\"/detail/\"]",
+        "itemCount": null
+      },
+      "schedules": [
+        {
+          "startTime": "12:00",
+          "endTime": "12:01",
+          "intervalSeconds": 30
+        }
+      ],
+      "notification": {
+        "openProductUrl": true,
+        "notifyOtherExtensions": false,
+        "siteId": "sevennet"
+      },
+      "source": {
+        "kind": "buy-target",
+        "siteId": "sevennet",
+        "entryId": "7net-pokemon"
+      }
+    }
+  ]
+}

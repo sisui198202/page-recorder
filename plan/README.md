@@ -152,7 +152,7 @@ plan/todo.md（タスク化）
   1. repo ローカルルール (`AGENTS.md` / `CLAUDE.md` / `README.md` / `plan/README.md` / 必要時 `rules/`)
   2. `~/.claude/rules/` の正本
   3. `~/.codex/rules/` の追従要約
-  4. `~/Dropbox/Rule/Category` の汎用正本
+  4. `~/Documents/Rule/Category` の汎用正本
 - 既存ルールで明文化済みなら更新しない
 - repo 固有の判断なら repo ローカルだけ更新し、複数 repo で再利用する判断なら Claude / Codex / Dropbox まで提案対象に含める
 - `done.md` または最終報告には、ルール更新提案の有無・候補ファイル・更新範囲・更新しない理由を残す
